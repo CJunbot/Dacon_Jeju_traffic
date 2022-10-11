@@ -1,6 +1,5 @@
 import numpy as np
 import optuna
-
 import lightgbm as lgb
 import sklearn.datasets
 import sklearn.metrics

@@ -1,11 +1,9 @@
-import lightgbm
 import optuna
-from optuna import Trial
 from optuna.samplers import TPESampler
 import pandas as pd
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 
 sampler = TPESampler(seed=10)
 
@@ -15,16 +13,15 @@ def objective(trial):
     x = train.drop(columns=['target'])
     x_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_state=42)
     d_train = lgb.Dataset(x_train, label=y_train,
-                          categorical_feature=['road_in_use',
-                                               'road_rating', 'multi_linked',
-                                               'road_name', 'connect_code', 'vehicle_restricted', 'road_type',
+                          categorical_feature=['road_in_use', 'road_rating',
+                                               'road_name', 'connect_code', 'road_type',
                                                'start_node_name',
                                                'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
     params = {
         'objective': 'regression',
         "verbose": -1,
         'metric': 'mse',
-
+        'device_type': 'gpu',
         'learning_rate': trial.suggest_float("learning_rate", 1e-8, 1e-2),
         'num_leaves': trial.suggest_int('num_leaves', 2, 1024),
         'max_depth': trial.suggest_int('max_depth', 3, 15),
@@ -35,7 +32,7 @@ def objective(trial):
 
     # Generate model
     bst = lgb.train(params, d_train)
-    MSE = mean_squared_error(y_val, bst.predict(X_val))
+    MSE = mean_absolute_error(y_val, bst.predict(X_val))
     return MSE
 
 

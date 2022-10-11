@@ -1,7 +1,7 @@
 import pandas as pd
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error as mae
 
 train = pd.read_parquet('data/train_after.parquet')
 
@@ -18,20 +18,24 @@ d_train = lgb.Dataset(x_train, label=y_train,
 params = {}
 params['objective'] = 'regression'
 params["verbose"] = -1
-params['metric'] = 'mse'
+params['metric'] = 'mae'
 params['device_type'] = 'gpu'
-params['learning_rate'] = 0.001
+params['learning_rate'] = 0.007713208719461027
 params['boosting_type'] = 'gbdt'
 params['objective'] = 'regression'
-params['metric'] = 'mse'
+params['metric'] = 'mae'
 params['sub_feature'] = 0.5
-params['num_leaves'] = 20
+params['num_leaves'] = 23
 params['min_data'] = 50
-params['max_depth'] = 10
+params['max_depth'] = 11
+params['min_child_samples'] = 76
+params['n_estimators'] = 1546
+params['subsample'] = 0.5348779873185086
 
-bst = lgb.train(params, d_train, 1000)
+
+bst = lgb.train(params, d_train, 100)
 
 y_pred = bst.predict(x_test)
 
-accuracy = mean_squared_error(y_pred, y_test)
+accuracy = mae(y_pred, y_test)
 print(accuracy)
