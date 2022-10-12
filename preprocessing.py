@@ -61,10 +61,8 @@ test['month'] = test['base_date'].apply(extract_month)
 test['day'] = test['base_date'].apply(extract_day)
 
 # drop cols
-train.drop(columns=['id', 'base_date', 'height_restricted', 'year', 'day', 'month', 'multi_linked', 'start_longitude',
-                    'end_longitude', 'day_of_week', 'vehicle_restricted'], inplace=True)
-test.drop(columns=['id', 'base_date', 'height_restricted', 'year', 'day', 'month', 'multi_linked', 'start_longitude',
-                    'end_longitude', 'day_of_week', 'vehicle_restricted'], inplace=True)
+train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'vehicle_restricted'], inplace=True)
+test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'vehicle_restricted'], inplace=True)
 
 print(train.head(50))
 print('\n')

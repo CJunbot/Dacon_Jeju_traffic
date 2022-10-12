@@ -3,7 +3,7 @@ import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error as mae
 
-train = pd.read_parquet('data/train_after.parquet')
+train = pd.read_parquet('sfa/train_after.parquet')
 
 y = train['target']
 x = train.drop(columns=['target'])

@@ -1,13 +1,11 @@
-import seaborn as sns
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def isnull_in_data(train, test):
-    print("Train data missed values:\n")
+    print("Train sfa missed values:\n")
     print(train.isnull().sum())
     print("-----------------------------------")
-    print("Test data missed values:\n")
+    print("Test sfa missed values:\n")
     print(test.isnull().sum())
 
 

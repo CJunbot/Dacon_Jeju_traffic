@@ -5,8 +5,8 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 400)
 
-train = pd.read_parquet('data/train.parquet')
-test = pd.read_parquet('data/test.parquet')
+train = pd.read_parquet('sfa/train.parquet')
+test = pd.read_parquet('sfa/test.parquet')
 
 train['road_name'] = train['road_name'].replace('-', None)
 test['road_name'] = test['road_name'].replace('-', None)

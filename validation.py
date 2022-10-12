@@ -15,7 +15,7 @@ def objective(trial):
     d_train = lgb.Dataset(x_train, label=y_train,
                           categorical_feature=['road_in_use', 'road_rating',
                                                'road_name', 'connect_code', 'road_type',
-                                               'start_node_name',
+                                               'start_node_name', 'day_of_week',
                                                'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
     params = {
         'objective': 'regression',
