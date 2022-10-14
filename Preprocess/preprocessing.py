@@ -15,8 +15,8 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 400)
 
-train = pd.read_parquet('data/train.parquet')
-test = pd.read_parquet('data/test.parquet')
+train = pd.read_parquet('../data/train.parquet')
+test = pd.read_parquet('../data/test.parquet')
 
 # Normalization
 scaler = MinMaxScaler()
@@ -61,14 +61,14 @@ test['month'] = test['base_date'].apply(extract_month)
 test['day'] = test['base_date'].apply(extract_day)
 
 # drop cols
-train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'vehicle_restricted'], inplace=True)
-test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'vehicle_restricted'], inplace=True)
+train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'vehicle_restricted', 'road_in_use'], inplace=True)
+test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'vehicle_restricted', 'road_in_use'], inplace=True)
 
 print(train.head(50))
 print('\n')
 print(test.head(50))
 
 # save processed dataset to parquet
-train.to_parquet('data/train_after.parquet', index=False)
-test.to_parquet('data/test_after.parquet', index=False)
+train.to_parquet('../data/train_cat.parquet', index=False)
+test.to_parquet('../data/test_cat.parquet', index=False)
 

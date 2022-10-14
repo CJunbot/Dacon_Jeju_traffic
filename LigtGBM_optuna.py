@@ -13,7 +13,7 @@ def objective(trial):
     x = train.drop(columns=['target'])
     x_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_state=42)
     d_train = lgb.Dataset(x_train, label=y_train,
-                          categorical_feature=['road_in_use', 'road_rating',
+                          categorical_feature=['road_rating',
                                                'road_name', 'connect_code', 'road_type',
                                                'start_node_name', 'day_of_week',
                                                'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
