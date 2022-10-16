@@ -17,6 +17,6 @@ def bar_plot(feature):
 
 
 plt.figure()
-bar_plot('road_type')
-sns.displot(train['lane_count'])
+bar_plot('road_in_use')
+#sns.displot(train['lane_count'])
 plt.show()

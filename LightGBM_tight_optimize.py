@@ -16,19 +16,20 @@ def objective(trial):
     d_train = lgb.Dataset(x_train, label=y_train,
                           categorical_feature=['road_rating',
                                                'road_name', 'connect_code', 'road_type',
-                                               'start_node_name',
                                                'start_node_name', 'day_of_week',
-                                               'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
+                                               'start_turn_restricted', 'end_node_name', 'end_turn_restricted',
+                                               'multi_linked', 'road_in_use'])
+
     params = {
         'objective': 'regression',
         "verbose": -1,
         'metric': 'mae',
         'device_type': 'gpu',
-        'learning_rate': trial.suggest_float("learning_rate", 1e-8, 1e-2),
-        'num_leaves': trial.suggest_int('num_leaves', 2, 1024),
-        'max_depth': trial.suggest_int('max_depth', 3, 15),
-        'min_child_samples': trial.suggest_int('min_child_samples', 5, 100),
-        'n_estimators': trial.suggest_int('n_estimators', 100, 3000),
+        'learning_rate': trial.suggest_float("learning_rate", 1e-4, 1e-2),
+        'num_leaves': trial.suggest_int('num_leaves', 992, 3024),
+        'max_depth': trial.suggest_int('max_depth', 15, 45),
+        'min_child_samples': trial.suggest_int('min_child_samples', 58, 10),
+        'n_estimators': trial.suggest_int('n_estimators', 2859, 6000),
         'subsample': trial.suggest_float('subsample', 0.4, 1),
     }
     # Generate model
@@ -39,7 +40,7 @@ def objective(trial):
 
 if __name__ == "__main__":
     study = optuna.create_study(direction="minimize", sampler=sampler)
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=30)
 
     print("Number of finished trials: {}".format(len(study.trials)))
 
