@@ -41,7 +41,11 @@ train['road_name'] = train['road_name'].replace('-', None)
 test['road_name'] = test['road_name'].replace('-', None)
 
 for name in ['road_name', 'start_node_name', 'end_node_name']:
+<<<<<<< HEAD
+    glmm_encoder = ce.GLMMEncoder(cols=[name], handle_missing='return_nan', randomized=True, binomial_target=False)
+=======
     glmm_encoder = ce.CatBoostEncoder(cols=[name], handle_missing='return_nan')
+>>>>>>> 9ee693be1db224917e85fe1efd172bd7330b199f
     train[name] = glmm_encoder.fit_transform(train[name], train['target'])
     test[name] = glmm_encoder.transform(test[name])
 

@@ -17,6 +17,11 @@ def bar_plot(feature):
 
 
 plt.figure()
+<<<<<<< HEAD
+#bar_plot('road_name')  # 값
+sns.displot(train['road_name'])  # 분포
+=======
 bar_plot('road_in_use')
 #sns.displot(train['lane_count'])
+>>>>>>> 9ee693be1db224917e85fe1efd172bd7330b199f
 plt.show()
