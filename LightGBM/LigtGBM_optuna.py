@@ -9,7 +9,7 @@ sampler = TPESampler(seed=10)
 
 
 def objective(trial):
-    train = pd.read_parquet('data/train_after.parquet')
+    train = pd.read_parquet('../data/train_after.parquet')
     y = train['target']
     x = train.drop(columns=['target'])
     x2, x_test, y2, y_test = train_test_split(x, y, test_size=0.2, random_state=42, shuffle=True)

@@ -23,5 +23,5 @@ print(train.corr()['target'].sort_values)
 print('\n')
 print(train.describe())
 print('\n')
-print(train.describe(include=['O']))
+#print(train.describe(include=['O']))
 
