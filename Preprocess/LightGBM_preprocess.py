@@ -1,14 +1,19 @@
 import pandas as pd
 import category_encoders as ce
+import numpy as np
+
 
 def extract_year(row):
     return int(str(row)[0:4])-2020
 
+
 def extract_month(row):
     return int(str(row)[4:6])
 
+
 def extract_day(row):
     return int(str(row)[6:])
+
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -37,7 +42,6 @@ for name in ['road_name', 'start_node_name', 'end_node_name']:
     train[name] = cat_encoder.fit_transform(train[name], train['target'])
     test[name] = cat_encoder.transform(test[name])
 
-
 # separate base date to year, month, day
 train['year'] = train['base_date'].apply(extract_year)
 train['month'] = train['base_date'].apply(extract_month)
@@ -45,6 +49,19 @@ train['day'] = train['base_date'].apply(extract_day)
 test['year'] = test['base_date'].apply(extract_year)
 test['month'] = test['base_date'].apply(extract_month)
 test['day'] = test['base_date'].apply(extract_day)
+
+# add feature
+train.loc[(train['maximum_speed_limit'] <= 40), 'road_types'] = 0  # 인접 도로
+train.loc[(train['maximum_speed_limit'] == 50), 'road_types'] = 1  # 도심부 도로
+train.loc[(train['maximum_speed_limit'] == 60) & (train['lane_count'] == 1), 'road_types'] = 2  # 도심부 외 도로
+train.loc[(train['maximum_speed_limit'] == 60) & (train['lane_count'] >= 2), 'road_types'] = 1  # 도심부 도로
+train.loc[(train['maximum_speed_limit'] > 60), 'road_types'] = 2  # 도심부 외 도로
+train['road_types'] = train['road_types'].astype(dtype='int64')
+
+train.loc[(7 == train['month']) & (train['day'] >= 23), 'peak_season'] = '1'
+train.loc[(8 == train['month']) & (train['day'] <= 5), 'peak_season'] = '1'
+train['peak_season'] = train['peak_season'].fillna(0)
+train['peak_season'] = train['peak_season'].astype(dtype='int64')
 
 # drop cols
 train.drop(columns=['id', 'base_date', 'height_restricted', 'vehicle_restricted', 'road_in_use'], inplace=True)

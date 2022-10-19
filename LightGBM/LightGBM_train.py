@@ -21,7 +21,7 @@ params['device_type'] = 'gpu'
 params['boosting_type'] = 'gbdt'
 params['learning_rate'] = 0.1
 # 예측력 상승
-params['num_iterations'] = 300  # = num round, num_boost_round
+params['num_iterations'] = 500  # = num round, num_boost_round
 params['min_child_samples'] = 120
 params['n_estimators'] = 5999
 params['subsample'] = 0.8488291

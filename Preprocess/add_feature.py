@@ -4,13 +4,11 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 600)
 
-train = pd.read_parquet('../data/train.parquet')
-test = pd.read_parquet('../data/test.parquet')
+train = pd.read_parquet('../data/train_after.parquet')
+test = pd.read_parquet('../data/test_after.parquet')
 
-train.loc[(train['maximum_speed_limit'] <= 40), 'test'] = '인접 도로'
-train.loc[(train['maximum_speed_limit'] == 50), 'test'] = '도심부 도로'
-train.loc[(train['maximum_speed_limit'] == 60) & (train['lane_count'] == 1), 'test'] = '도심부 외 도로'
-train.loc[(train['maximum_speed_limit'] == 60) & (train['lane_count'] == 2), 'test'] = '도심부 도로'
-train.loc[(train['maximum_speed_limit'] > 60), 'test'] = '도심부 외 도로'
+train.loc[(1 <= train['month']) & (train['month'] < 6), 'peak_season'] = '0'
+train.loc[(6 <= train['month']) & (train['month'] <= 9), 'peak_season'] = '1'
+train.loc[(9 < train['month']) & (train['month'] <= 12), 'peak_season'] = '0'
 
 print(train.head(20))
