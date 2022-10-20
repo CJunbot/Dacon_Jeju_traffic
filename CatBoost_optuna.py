@@ -31,23 +31,23 @@ def objective(trial):
     param['random_state'] = 42
     param['eval_metric'] = 'RMSE'
     param['task_type'] = 'GPU'
-    param['iterations'] = trial.suggest_int("iterations", 1000, 10000)
-    param['learning_rate'] = trial.suggest_float("learning_rate", 0.01, 0.2)
+    param['iterations'] = 2000
+    param['learning_rate'] = 0.1
     param['depth'] = trial.suggest_int('depth', 4, 15)
     param['l2_leaf_reg'] = trial.suggest_float('l2_leaf_reg', 2, 10)
     param['min_child_samples'] = trial.suggest_int('min_data_in_leaf', 1, 50)
     param['random_strength'] = trial.suggest_float('random_strength', 0, 10)
 
     regressor = CatBoostRegressor(**param)
-    regressor.fit(train_pool, eval_set=[val_pool], early_stopping_rounds=30)
+    regressor.fit(train_pool, eval_set=[val_pool], early_stopping_rounds=20)
     loss = mean_absolute_error(y_test, regressor.predict(test_pool))
     return loss
 
 
 if __name__ == "__main__":
     sampler = TPESampler(seed=42)
-    study = optuna.create_study(direction="minimize")
-    study.optimize(objective, n_trials=50)
+    study = optuna.create_study(direction="minimize", sampler=sampler)
+    study.optimize(objective, n_trials=10)
 
     print("Number of finished trials: {}".format(len(study.trials)))
 
