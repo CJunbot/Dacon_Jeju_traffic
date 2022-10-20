@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
 
 def extract_year(row):
     return int(str(row)[0:4])
