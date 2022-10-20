@@ -25,6 +25,9 @@ params['learning_rate'] = 0.06836291374083868
 params['num_iterations'] = 800  # = num round, num_boost_round
 params['min_child_samples'] = 110
 params['n_estimators'] = 58225
+params['num_iterations'] = 500  # = num round, num_boost_round
+params['min_child_samples'] = 120
+params['n_estimators'] = 5999
 params['subsample'] = 0.8488291
 params['num_leaves'] = 2533
 params['max_depth'] = 26

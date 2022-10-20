@@ -27,3 +27,4 @@ print(train.head(100))
 #print(train.describe(include=['O']))
 #print(test.describe(include=['O']))
 #print(sex.describe(include=['O']))
+
