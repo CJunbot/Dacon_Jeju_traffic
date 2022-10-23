@@ -7,7 +7,7 @@ from optuna.samplers import TPESampler
 
 
 def objective(trial):
-    train = pd.read_parquet('data/train_cat.parquet')
+    train = pd.read_parquet('../data/train_cat.parquet')
     y = train['target']
     x = train.drop(columns=['target'])
 

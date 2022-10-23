@@ -16,20 +16,22 @@ car_mine_west = [104600,104821,105184,105380,10557,105881,106098,106373,106225,1
 car_youngup_west = [1981,1988,1995,1990,1988,1992,2020,2038,1865,1871,1876]
 
 for twentyone in range(9,13):
-    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == '제주시'), 'car_gwan'] = car_gwan_jeju[twentyone-9]
-    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == '제주시'), 'car_mine'] = car_mine_jeju[twentyone - 9]
-    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == '제주시'), 'car_youngup'] = car_youngup_jeju[twentyone - 9]
-    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == '서귀포시'), 'car_gwan'] = car_gwan_west[twentyone - 9]
-    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == '서귀포시'), 'car_mine'] = car_mine_west[twentyone - 9]
-    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == '서귀포시'), 'car_youngup'] = car_youngup_west[twentyone - 9]
+    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == 0), 'car'] = car_gwan_jeju[twentyone-9] + car_mine_jeju[twentyone - 9] + car_youngup_jeju[twentyone - 9]
+    train.loc[(twentyone == train['month']) & (train['year'] == 2021) & (train['start_region_1'] == 1), 'car'] = car_gwan_west[twentyone - 9] + car_mine_west[twentyone - 9] + car_youngup_west[twentyone - 9]
 
 for twentytwo in range(1, 8):
-    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == '제주시'), 'car_gwan'] = car_gwan_jeju[twentytwo + 3]
-    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == '제주시'), 'car_mine'] = car_mine_jeju[twentytwo + 3]
-    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == '제주시'), 'car_youngup'] = car_youngup_jeju[twentytwo + 3]
-    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == '서귀포시'), 'car_gwan'] = car_gwan_west[twentytwo + 3]
-    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == '서귀포시'), 'car_mine'] = car_mine_west[twentytwo + 3]
-    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == '서귀포시'), 'car_youngup'] = car_youngup_west[twentytwo + 3]
+    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == 0), 'car'] = car_gwan_jeju[twentytwo + 3] + car_mine_jeju[twentytwo + 3] + car_youngup_jeju[twentytwo + 3]
+    train.loc[(twentytwo == train['month']) & (train['year'] == 2022) & (train['start_region_1'] == 1), 'car'] = car_gwan_west[twentytwo + 3] + car_mine_west[twentytwo + 3] + car_youngup_west[twentytwo + 3]
 
+for twentyone in range(9,13):
+    test.loc[(twentyone == test['month']) & (test['year'] == 2021) & (test['start_region_1'] == 0), 'car'] = car_gwan_jeju[twentyone-9] + car_mine_jeju[twentyone - 9] + car_youngup_jeju[twentyone - 9]
+    test.loc[(twentyone == test['month']) & (test['year'] == 2021) & (test['start_region_1'] == 1), 'car'] = car_gwan_west[twentyone - 9] + car_mine_west[twentyone - 9] + car_youngup_west[twentyone - 9]
 
+for twentytwo in range(1, 8):
+    test.loc[(twentytwo == test['month']) & (test['year'] == 2022) & (test['start_region_1'] == 0), 'car'] = car_gwan_jeju[twentytwo + 3] + car_mine_jeju[twentytwo + 3] + car_youngup_jeju[twentytwo + 3]
+    test.loc[(twentytwo == test['month']) & (test['year'] == 2022) & (test['start_region_1'] == 1), 'car'] = car_gwan_west[twentytwo + 3] + car_mine_west[twentytwo + 3] + car_youngup_west[twentytwo + 3]
+
+print(train.head(20))
+test.to_parquet('../../data/test_bus_after.parquet', index=False)
+train.to_parquet('../../data/train_bus_after.parquet', index=False)
 

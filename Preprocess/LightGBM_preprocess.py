@@ -1,7 +1,6 @@
 import pandas as pd
 import category_encoders as ce
 from haversine import haversine
-import numpy as np
 
 def in_jejudo():
     in_jeju_weekdays_2021 = [47445, 56835, 64137, 54879]
@@ -83,10 +82,10 @@ def extract_day(row):
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-pd.set_option('display.width', 600)
+pd.set_option('display.width', 1000)
 
-train = pd.read_parquet('../data/train.parquet')
-test = pd.read_parquet('../data/test.parquet')
+train = pd.read_parquet('../data/train_address.parquet')
+test = pd.read_parquet('../data/test_address.parquet')
 
 # Missing value handle
 train.loc[(train['start_node_name'] == train['end_node_name']), 'road_name'] = train['start_node_name']
@@ -102,6 +101,34 @@ for index, embark in enumerate(['없음', '있음']):
     test.loc[(test['start_turn_restricted'] == embark), 'start_turn_restricted'] = index
     train.loc[(train['end_turn_restricted'] == embark), 'end_turn_restricted'] = index
     test.loc[(test['end_turn_restricted'] == embark), 'end_turn_restricted'] = index
+
+# 동, 리 나누기 (리면 1, 동이면 0)
+train.loc[(train['start_region_3'] == ''), 'country'] = 0
+train.loc[(train['start_region_3'] != ''), 'country'] = 1
+test.loc[(test['start_region_3'] == ''), 'country'] = 0
+test.loc[(test['start_region_3'] != ''), 'country'] = 1
+
+# Region 1 인코딩(시)
+train.loc[(train['start_region_1'] == '제주시'), 'start_region_1'] = 0
+train.loc[(train['start_region_1'] == '서귀포시'), 'start_region_1'] = 1
+train.loc[(train['end_region_1'] == '제주시'), 'end_region_1'] = 0
+train.loc[(train['end_region_1'] == '서귀포시'), 'end_region_1'] = 1
+
+test.loc[(test['start_region_1'] == '제주시'), 'start_region_1'] = 0
+test.loc[(test['start_region_1'] == '서귀포시'), 'start_region_1'] = 1
+test.loc[(test['end_region_1'] == '제주시'), 'end_region_1'] = 0
+test.loc[(test['end_region_1'] == '서귀포시'), 'end_region_1'] = 1
+
+# Region2, 3 합치기(3에 결측치가 많아서)
+train['start_region_2'] = train['start_region_2'] + train['start_region_3']
+train['end_region_2'] = train['end_region_2'] + train['end_region_3']
+test['start_region_2'] = test['start_region_2'] + test['start_region_3']
+test['end_region_2'] = test['end_region_2'] + test['end_region_3']
+
+for namen in ['start_region_2', 'end_region_2']:
+    cat_encoder = ce.CatBoostEncoder(cols=[namen], handle_missing='return_nan')
+    train[namen] = cat_encoder.fit_transform(train[namen], train['target'])
+    test[namen] = cat_encoder.transform(test[namen])
 
 # Category Encoder
 train['road_name'] = train['road_name'].replace('-', None)
@@ -146,9 +173,6 @@ test.loc[(8 == test['month']) & (test['day'] <= 5), 'peak_season'] = '1'
 test['peak_season'] = test['peak_season'].fillna(0)
 test['peak_season'] = test['peak_season'].astype(dtype='int64')
 
-
-
-
 # 도로 연장 추가
 train['km'] = 0
 test['km'] = 0
@@ -162,9 +186,11 @@ for haver2 in range(len(test)):
     goal = ((test['end_latitude'][haver2]), (test['end_longitude'][haver2]))  # (lat, lon)
     test['km'][haver2] = haversine(start, goal)
 
-# drop cols
-train.drop(columns=['id', 'base_date', 'height_restricted', 'vehicle_restricted', 'multi_linked', 'connect_code', 'road_in_use'], inplace=True)
-test.drop(columns=['id', 'base_date', 'height_restricted', 'vehicle_restricted', 'multi_linked', 'connect_code', 'road_in_use'], inplace=True)
+# drop cols // 'multi_linked', 'connect_code'
+train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
+                    'start_region_3', 'end_region_3', 'vehicle_restricted', 'road_in_use'], inplace=True)
+test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
+                   'start_region_3', 'end_region_3', 'vehicle_restricted', 'road_in_use'], inplace=True)
 
 print(train.head(50))
 print('\n')

@@ -15,8 +15,8 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 400)
 
-train = pd.read_parquet('../data/train.parquet')
-test = pd.read_parquet('../data/test.parquet')
+train = pd.read_parquet('../data/train_bus.parquet')
+test = pd.read_parquet('../data/test_bus.parquet')
 
 # separate base date to year, month, day
 train['year'] = train['base_date'].apply(extract_year)
