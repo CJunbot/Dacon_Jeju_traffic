@@ -1,4 +1,6 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 def isnull_in_data(train, test):
@@ -12,14 +14,12 @@ def isnull_in_data(train, test):
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 400)
-train = pd.read_parquet('../data/train_bus_after.parquet')
+train = pd.read_parquet('../data/train_after.parquet')
 test = pd.read_parquet('../data/test_after.parquet')
 
 print(train.shape)
 print("-----------------------------------")
-print(train.corrwith(train['target']).sort_values())
-print("-----------------------------------")
-print(train.corrwith(train['car']).sort_values())
+print(train.corrwith(train['population_dong']).sort_values())
 print("-----------------------------------")
 print(isnull_in_data(train, test))
 print("-----------------------------------")

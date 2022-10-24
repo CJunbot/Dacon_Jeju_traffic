@@ -18,8 +18,6 @@ bst = lgb.Booster(model_file='model.txt')
 accuracy = mean_absolute_error(y_test, bst.predict(x_test))
 print(accuracy)
 
-print(test.head())
-print(test.isnull().sum())
 pred = bst.predict(test)
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
