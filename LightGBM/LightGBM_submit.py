@@ -14,7 +14,7 @@ x = train.drop(columns=['target'])
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 test = pd.read_parquet('../data/test_after.parquet')
 
-bst = lgb.Booster(model_file='model.txt')
+bst = lgb.Booster(model_file='model2.txt')
 accuracy = mean_absolute_error(y_test, bst.predict(x_test))
 print(accuracy)
 

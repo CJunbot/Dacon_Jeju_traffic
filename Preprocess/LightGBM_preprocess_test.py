@@ -61,11 +61,12 @@ test.loc[(test['start_region_1'] == '서귀포시'), 'start_region_1'] = 1
 test.loc[(test['end_region_1'] == '제주시'), 'end_region_1'] = 0
 test.loc[(test['end_region_1'] == '서귀포시'), 'end_region_1'] = 1
 
+
 # Region2, 3 합치기(3에 결측치가 많아서)
-train['start_region_2'] = train['start_region_2'] + train['start_region_3']
 train['end_region_2'] = train['end_region_2'] + train['end_region_3']
-test['start_region_2'] = test['start_region_2'] + test['start_region_3']
 test['end_region_2'] = test['end_region_2'] + test['end_region_3']
+train['start_region_2'] = train['start_region_2'] + train['start_region_3']
+test['start_region_2'] = test['start_region_2'] + test['start_region_3']
 
 for namen in ['start_region_2', 'end_region_2']:
     cat_encoder1 = ce.CatBoostEncoder(cols=[namen], handle_missing='return_nan')
@@ -76,7 +77,7 @@ for namen in ['start_region_2', 'end_region_2']:
 train['road_name'] = train['road_name'].replace('-', None)
 test['road_name'] = test['road_name'].replace('-', None)
 
-for name in ['road_name', 'start_node_name', 'end_node_name']:
+for name in ['road_name', 'start_node_name' ,'end_node_name']:
     cat_encoder2 = ce.CatBoostEncoder(cols=[name], handle_missing='return_nan')
     train[name] = cat_encoder2.fit_transform(train[name], train['target'])
     test[name] = cat_encoder2.transform(test[name])
@@ -139,63 +140,6 @@ for k2 in range(1, 9):
     train.loc[(1 == train['start_region_1']) & (train['month'] == k2) &
               (train['day_of_week'] > 4) & (train['year'] == 2022), 'in_people'] = in_west_weekend_2022[k2 - 9]
 
-out_jeju_weekdays_2021 = [51730, 60401,71218,62645]
-out_jeju_weekend_2021 = [56490,65312,79009,55512]
-out_west_weekdays_2021 = [44231,50254,59668,51095]
-out_west_weekend_2021 = [48527,57725,69804,46532]
-out_jeju_weekdays_2022 = [73431,67646,54145,66076,71756,71546,71219,63680,66901]
-out_jeju_weekend_2022 = [68553,65952,53526,77318,81846,77837,77267,76093,76522]
-out_west_weekdays_2022 = [59782,54032,45122,56657,61234,57317,61490,55516,55976]
-out_west_weekend_2022 = [51558,56236,44477,70904,72832,70748,69365,68734,66969]
-# 2021년
-for k in range(9, 13):
-    # 평일
-    train.loc[(0 == train['start_region_1']) & (train['month'] == k) &
-              (train['day_of_week'] <= 4) & (train['year'] == 2021), 'out_people'] = out_jeju_weekdays_2021[k-9]
-    train.loc[(1 == train['start_region_1']) & (train['month'] == k) &
-              (train['day_of_week'] <= 4) & (train['year'] == 2021), 'out_people'] = out_west_weekdays_2021[k-9]
-    # 주말
-    train.loc[(0 == train['start_region_1']) & (train['month'] == k) &
-              (train['day_of_week'] > 4) & (train['year'] == 2021), 'out_people'] = out_jeju_weekend_2021[k-9]
-    train.loc[(1 == train['start_region_1']) & (train['month'] == k) &
-              (train['day_of_week'] > 4) & (train['year'] == 2021), 'out_people'] = out_west_weekend_2021[k-9]
-# 2022년
-for k2 in range(1, 9):
-    # 평일
-    train.loc[(0 == train['start_region_1']) & (train['month'] == k2) &
-              (train['day_of_week'] <= 4) & (train['year'] == 2022), 'out_people'] = out_jeju_weekdays_2022[k2 - 9]
-    train.loc[(1 == train['start_region_1']) & (train['month'] == k2) &
-              (train['day_of_week'] <= 4) & (train['year'] == 2022), 'out_people'] = out_west_weekdays_2022[k2 - 9]
-    # 주말
-    train.loc[(0 == train['start_region_1']) & (train['month'] == k2) &
-              (train['day_of_week'] > 4) & (train['year'] == 2022), 'out_people'] = out_jeju_weekend_2022[k2 - 9]
-    train.loc[(1 == train['start_region_1']) & (train['month'] == k2) &
-              (train['day_of_week'] > 4) & (train['year'] == 2022), 'out_people'] = out_west_weekend_2022[k2 - 9]
-
-# 2022년
-for k2 in range(1, 9):
-    # 평일
-    test.loc[(0 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] <= 4) & (test['year'] == 2022), 'in_people'] = in_jeju_weekdays_2022[k2 - 9]
-    test.loc[(1 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] <= 4) & (test['year'] == 2022), 'in_people'] = in_west_weekdays_2022[k2 - 9]
-    # 주말
-    test.loc[(0 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] > 4) & (test['year'] == 2022), 'in_people'] = in_jeju_weekend_2022[k2 - 9]
-    test.loc[(1 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] > 4) & (test['year'] == 2022), 'in_people'] = in_west_weekend_2022[k2 - 9]
-for k2 in range(1, 9):
-    # 평일
-    test.loc[(0 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] <= 4) & (test['year'] == 2022), 'out_people'] = out_jeju_weekdays_2022[k2 - 9]
-    test.loc[(1 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] <= 4) & (test['year'] == 2022), 'out_people'] = out_west_weekdays_2022[k2 - 9]
-    # 주말
-    test.loc[(0 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] > 4) & (test['year'] == 2022), 'out_people'] = out_jeju_weekend_2022[k2 - 9]
-    test.loc[(1 == test['start_region_1']) & (test['month'] == k2) &
-              (test['day_of_week'] > 4) & (test['year'] == 2022), 'out_people'] = out_west_weekend_2022[k2 - 9]
-
 # add feature
 train.loc[(train['maximum_speed_limit'] <= 40), 'road_types'] = 0  # 인접 도로
 train.loc[(train['maximum_speed_limit'] == 50), 'road_types'] = 1  # 도심부 도로
@@ -237,11 +181,13 @@ for haver2 in range(len(test)):
 
 # drop cols // 'multi_linked', 'connect_code'
 train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
-                    'start_region_3', 'end_region_3',
+                    'start_node_name', 'start_region_2',
+                    'start_region_3', 'end_region_3', 'start_region_1', 'end_region_1',
                     'vehicle_restricted', 'road_in_use'], inplace=True)
 test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
-                    'start_region_3', 'end_region_3',
-                   'vehicle_restricted', 'road_in_use'], inplace=True)
+                    'start_node_name', 'start_region_2',
+                    'start_region_3', 'end_region_3', 'start_region_1', 'end_region_1',
+                     'vehicle_restricted', 'road_in_use'], inplace=True)
 
 print(train.head(50))
 print('\n')
@@ -250,4 +196,3 @@ print(test.head(50))
 # save processed dataset to parquet
 train.to_parquet('../data/train_after.parquet', index=False)
 test.to_parquet('../data/test_after.parquet', index=False)
-

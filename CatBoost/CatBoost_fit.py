@@ -29,12 +29,14 @@ test_pool = Pool(x_test,
                                'road_types'])
 
 # specify the training parameters
-cb_model = CatBoostRegressor(iterations=50000,
+cb_model = CatBoostRegressor(iterations=30000,
                              devices='GPU',
                              eval_metric='RMSE',
                              random_seed = 42,
                              od_type='Iter',
                              metric_period = 50,
+                             border_count=32,
+                             max_ctr_complexity=1,
                              od_wait=20)
 #param['l2_leaf_reg'] = 2
 #param['random_strength'] = 5
