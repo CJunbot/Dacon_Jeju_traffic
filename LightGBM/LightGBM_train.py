@@ -27,12 +27,12 @@ params['max_depth'] = 35  # 26?
 # overfitting 방지
 params['min_child_weight'] = 0.4325  # 높을수록 / 최대 6?
 params['min_child_samples'] = 35  # 100 500 ?
-params['bagging_fraction'] = 0.8  # 낮을수록 overfitting down / 최소 0
+params['bagging_fraction'] = 0.8  # 낮을수록 overfitting down / 최소 0  = subsample
 params['subsample_freq'] = 60
-params['lambda_l1'] = 0.1
-params['lambda_l2'] = 0.1
-params['min_gain_to_split'] = 0.1
-params['feature_fraction'] = 0.90288  # 낮을수록 overfitting down / 최소 0
+params['lambda_l1'] = 0.1  # = reg_alpha
+params['lambda_l2'] = 0.1  # = reg_lambda
+params['min_gain_to_split'] = 0.1  # = min_split_gain
+params['feature_fraction'] = 0.90288  # 낮을수록 overfitting down / 최소 0  = colsample_bytree
 
 bst = lgb.LGBMRegressor(**params)
 bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='mae', early_stopping_rounds=25)

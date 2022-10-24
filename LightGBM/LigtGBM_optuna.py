@@ -7,7 +7,6 @@ from sklearn.metrics import mean_absolute_error
 
 sampler = TPESampler(seed=10)
 
-
 def objective(trial):
     train = pd.read_parquet('../data/train_after.parquet')
     y = train['target']
@@ -20,20 +19,24 @@ def objective(trial):
     params["verbose"] = -1
     params['metric'] = 'l1'
     params['device_type'] = 'gpu'
-    params['boosting_type'] = 'dart'
-    params['learning_rate'] = trial.suggest_float("learning_rate", 0.05, 0.09)
+    params['boosting_type'] = 'gbdt'
+    params['learning_rate'] = trial.suggest_float("learning_rate", 0.005, 0.06)
     # 예측력 상승
-    params['num_iterations'] = trial.suggest_int('num_iterations', 1000, 10000)  # = num round, num_boost_round
+    params['num_iterations'] = 10000
     params['min_child_samples'] = trial.suggest_int('min_child_samples', 100, 200)
-    params['n_estimators'] = trial.suggest_int('n_estimators', 5000, 10000)
+    params['n_estimators'] = trial.suggest_int('n_estimators', 8500, 20000)
     params['subsample'] = trial.suggest_float('subsample', 0.6, 1)
-    params['num_leaves'] = trial.suggest_int('num_leaves', 1500, 5024)
-    params['max_depth'] = trial.suggest_int('max_depth', 20, 40)
+    params['num_leaves'] = trial.suggest_int('num_leaves', 5500, 15024)
+    params['max_depth'] = trial.suggest_int('max_depth', 28, 40)
     # overfitting 방지
-    params['min_child_weight'] = trial.suggest_float('min_child_weight', 1e-3, 0.6)
-    params['min_child_samples'] = trial.suggest_int('min_child_samplesh', 25, 60)
-    params['subsample_freq'] = trial.suggest_int('subsample_freq', 1, 99)
-    params['feature_fraction'] = trial.suggest_float('feature_fraction', 0.7, 0.95)
+    params['min_child_weight'] = trial.suggest_float('min_child_weight', 0.4, 2)
+    params['min_child_samples'] = trial.suggest_int('min_child_samplesh', 30, 60)
+    params['bagging_fraction'] = trial.suggest_float('bagging_fraction', 0.3, 0.8)
+    params['lambda_l1'] = trial.suggest_float('lambda_l1', 0.05, 0.5)
+    params['lambda_l2'] = trial.suggest_float('lambda_l2', 0.05, 0.5)
+    params['subsample_freq'] = trial.suggest_int('subsample_freq', 50, 99)
+    params['min_gain_to_split'] = trial.suggest_float('min_gain_to_split', 0.01, 3)
+    params['feature_fraction'] = trial.suggest_float('feature_fraction', 0.5, 0.91)
 
     # Generate model
     bst = lgb.LGBMRegressor(**params)
@@ -45,7 +48,7 @@ def objective(trial):
 
 if __name__ == "__main__":
     study = optuna.create_study(direction="minimize", sampler=sampler)
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=30)
 
     print("Number of finished trials: {}".format(len(study.trials)))
 
