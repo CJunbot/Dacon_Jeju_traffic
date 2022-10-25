@@ -16,9 +16,9 @@ params["verbose"] = 1
 params['metric'] = 'mae'
 params['device_type'] = 'gpu'
 params['boosting_type'] = 'gbdt'
-params['learning_rate'] = 0.05836291374083868
+params['learning_rate'] = 0.05836291374083868  # 0.010 -> 2.884 / 0.028 -> 2.885 / 0.058 -> 2.893
 # 예측력 상승
-params['num_iterations'] = 2800  # = num round, num_boost_round
+params['num_iterations'] = 5000  # = num round, num_boost_round
 params['min_child_samples'] = 110
 params['n_estimators'] = 8500  # 8500
 params['subsample'] = 0.8488291
@@ -27,12 +27,12 @@ params['max_depth'] = 35  # 26?
 # overfitting 방지
 params['min_child_weight'] = 0.4325  # 높을수록 / 최대 6?
 params['min_child_samples'] = 35  # 100 500 ?
-params['bagging_fraction'] = 0.8  # 낮을수록 overfitting down / 최소 0  = subsample
+params['subsample'] = 0.8  # 낮을수록 overfitting down / 최소 0  = bagging_fraction
 params['subsample_freq'] = 60
-params['lambda_l1'] = 0.1  # = reg_alpha
-params['lambda_l2'] = 0.1  # = reg_lambda
+params['reg_alpha'] = 0.1  # = lambda l1
+params['reg_lambda'] = 0.1  # = lambda l2
 params['min_gain_to_split'] = 0.1  # = min_split_gain
-params['feature_fraction'] = 0.90288  # 낮을수록 overfitting down / 최소 0  = colsample_bytree
+params['colsample_bytree'] = 0.90288  # 낮을수록 overfitting down / 최소 0  = feature_fraction
 
 bst = lgb.LGBMRegressor(**params)
 bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='mae', early_stopping_rounds=25)

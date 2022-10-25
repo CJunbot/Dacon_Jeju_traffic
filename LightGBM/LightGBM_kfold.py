@@ -26,9 +26,9 @@ for tr_idx, val_idx in kf.split(x):
     params['metric'] = 'MAE'
     params['device_type'] = 'gpu'
     params['boosting_type'] = 'gbdt'
-    params['learning_rate'] = 0.05836291374083868
+    params['learning_rate'] = 0.02136291374083868
     # 예측력 상승
-    params['num_iterations'] = 2800  # = num round, num_boost_round
+    params['num_iterations'] = 5000  # = num round, num_boost_round
     params['min_child_samples'] = 110
     params['n_estimators'] = 8500  # 8500
     params['subsample'] = 0.8488291
@@ -46,7 +46,9 @@ for tr_idx, val_idx in kf.split(x):
 
     bst = LGBMRegressor(**params)
     bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='MAE', early_stopping_rounds=25)
-    y_pred += bst.predict(test, num_iteration=bst.best_iteration_) / n_splits
+    y_pred += bst.predict(test, num_iteration=bst.best_iteration_)
+
+y_pred /= n_splits
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
