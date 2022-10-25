@@ -68,11 +68,11 @@ for indexxxx, region in enumerate(west_list):
     test.loc[(test['year'] == 2021) & (test['start_region_1'] == '서귀포시') & (test['end_region_2'] == region), 'population_dong2'] = west_2021['인구'][indexxxx]
     test.loc[(test['year'] == 2021) & (test['start_region_1'] == '서귀포시') & (test['end_region_3'] == region), 'population_dong2'] = west_2021['인구'][indexxxx]
     # 제주시-2022년
-    test.loc[(train['year'] == 2022) & (test['start_region_1'] == '서귀포시'), 'population_city'] = west_2021['인구2'][0]
-    test.loc[(train['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['start_region_2'] == region), 'population_dong'] = west_2021['인구2'][indexxxx]
-    test.loc[(train['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['start_region_3'] == region), 'population_dong'] = west_2021['인구2'][indexxxx]
-    test.loc[(train['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['end_region_2'] == region), 'population_dong2'] = west_2021['인구2'][indexxxx]
-    test.loc[(train['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['end_region_3'] == region), 'population_dong2'] = west_2021['인구2'][indexxxx]
+    test.loc[(test['year'] == 2022) & (test['start_region_1'] == '서귀포시'), 'population_city'] = west_2021['인구2'][0]
+    test.loc[(test['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['start_region_2'] == region), 'population_dong'] = west_2021['인구2'][indexxxx]
+    test.loc[(test['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['start_region_3'] == region), 'population_dong'] = west_2021['인구2'][indexxxx]
+    test.loc[(test['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['end_region_2'] == region), 'population_dong2'] = west_2021['인구2'][indexxxx]
+    test.loc[(test['year'] == 2022) & (test['start_region_1'] == '서귀포시') & (test['end_region_3'] == region), 'population_dong2'] = west_2021['인구2'][indexxxx]
 print('서귀포시 인구 매핑 끝')
 
 print(train.head(20))
