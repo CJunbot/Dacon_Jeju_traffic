@@ -1,7 +1,7 @@
-import pandas as pd
-import lightgbm as lgb
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error
+from lightgbm import LGBMRegressor
+import pandas as pd
+import matplotlib.pyplot as plt
 
 train = pd.read_parquet('../data/train_after.parquet')
 
@@ -34,9 +34,12 @@ params['reg_lambda'] = 0.1  # = lambda l2
 params['min_gain_to_split'] = 0.1  # = min_split_gain
 params['colsample_bytree'] = 0.90288  # 낮을수록 overfitting down / 최소 0  = feature_fraction
 
-bst = lgb.LGBMRegressor(**params)
+bst = LGBMRegressor(**params)
 bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='mae', early_stopping_rounds=25)
-#pred = bst.predict(x_test, num_iteration=bst.best_iteration_)
-#MAE = mean_absolute_error(y_test, pred)
-#print('The MAE of prediction is:', MAE)
-bst.booster_.save_model('model2.txt')
+
+re = pd.DataFrame({'feature': x_train.colums, 'coefficient': bst.feature_importances_})
+re = re.sort_values(by='coefficient', ascending=False)
+plt.barh(re['feature'], re['coefficient'])
+plt.show()
+
+

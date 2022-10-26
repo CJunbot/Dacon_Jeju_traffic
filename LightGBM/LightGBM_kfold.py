@@ -30,7 +30,7 @@ for tr_idx, val_idx in kf.split(x):
     # 예측력 상승
     params['num_iterations'] = 5000  # = num round, num_boost_round
     params['min_child_samples'] = 110
-    params['n_estimators'] = 8500  # 8500
+    params['n_estimators'] = 5999  # 8500
     params['subsample'] = 0.8488291
     params['num_leaves'] = 5533
     params['max_depth'] = 35  # 26?
