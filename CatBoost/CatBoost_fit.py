@@ -12,11 +12,11 @@ x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_st
 # initialize Pool
 train_pool = Pool(x_train, y_train,
                   cat_features=['road_name', 'start_node_name', 'end_node_name',
-                                'start_region_2', ' end_region_2'])
+                                'start_region_2', 'end_region_2'])
 # day_of_week
 val_pool = Pool(x_val, y_val,
                 cat_features=['road_name', 'start_node_name', 'end_node_name',
-                              'start_region_2', ' end_region_2'])
+                              'start_region_2', 'end_region_2'])
 
 # specify the training parameters
 cb_model = CatBoostRegressor(learning_rate=0.04,

@@ -19,6 +19,8 @@ test = pd.read_parquet('../data/test_address.parquet')
 # Missing value handle
 train.loc[(train['start_node_name'] == train['end_node_name']), 'road_name'] = train['start_node_name']
 test.loc[(test['start_node_name'] == test['end_node_name']), 'road_name'] = test['start_node_name']
+train.loc[(train['road_name'] == ''), 'road_name'] = (train['start_node_name'] + train['end_node_name'])
+test.loc[(test['road_name'] == ''), 'road_name'] = (test['start_node_name'] + test['end_node_name'])
 
 # separate base date to year, month, day
 train['year'] = train['base_date'].apply(extract_year)
