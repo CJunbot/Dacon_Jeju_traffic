@@ -63,8 +63,6 @@ for namen in ['start_region_2', 'end_region_2']:
     train[namen] = cat_encoder1.fit_transform(train[namen], train['target'])
     test[namen] = cat_encoder1.transform(test[namen])
 
-train['end_region_2'] = (train['start_region_2'] + train['end_region_2'])/2
-
 # Category Encoder
 train['road_name'] = train['road_name'].replace('-', None)
 test['road_name'] = test['road_name'].replace('-', None)
@@ -73,8 +71,6 @@ for name in ['road_name', 'start_node_name', 'end_node_name']:
     cat_encoder2 = ce.CatBoostEncoder(cols=[name], handle_missing='return_nan')
     train[name] = cat_encoder2.fit_transform(train[name], train['target'])
     test[name] = cat_encoder2.transform(test[name])
-
-train['end_node_name'] = (train['start_node_name'] + train['end_node_name'])/2
 
 # 차량 등록 대수 추가
 car_gwan_jeju = [1630,1627,1639,1634,1638,1633,1612,1608,1611,1620,1639,1635,1632]
@@ -134,6 +130,31 @@ for k2 in range(1, 9):
     train.loc[(train['start_region_1'] == '서귀포시') & (train['month'] == k2) &
               (train['day_of_week'] > 4) & (train['year'] == 2022), 'in_people'] = in_west_weekend_2022[k2 - 9]
 
+# 2021년
+for k in range(9, 13):
+    # 평일
+    test.loc[(test['start_region_1'] == '제주시') & (test['month'] == k) &
+              (test['day_of_week'] <= 4) & (test['year'] == 2021), 'in_people'] = in_jeju_weekdays_2021[k-9]
+    test.loc[(test['start_region_1'] == '서귀포시') & (test['month'] == k) &
+              (test['day_of_week'] <= 4) & (test['year'] == 2021), 'in_people'] = in_west_weekdays_2021[k-9]
+    # 주말
+    test.loc[(test['start_region_1'] == '제주시') & (test['month'] == k) &
+              (test['day_of_week'] > 4) & (test['year'] == 2021), 'in_people'] = in_jeju_weekend_2021[k-9]
+    test.loc[(test['start_region_1'] == '서귀포시') & (test['month'] == k) &
+              (test['day_of_week'] > 4) & (test['year'] == 2021), 'in_people'] = in_west_weekend_2021[k-9]
+# 2022년
+for k2 in range(1, 9):
+    # 평일
+    test.loc[(test['start_region_1'] == '제주시') & (test['month'] == k2) &
+              (test['day_of_week'] <= 4) & (test['year'] == 2022), 'in_people'] = in_jeju_weekdays_2022[k2 - 9]
+    test.loc[(test['start_region_1'] == '서귀포시') & (test['month'] == k2) &
+              (test['day_of_week'] <= 4) & (test['year'] == 2022), 'in_people'] = in_west_weekdays_2022[k2 - 9]
+    # 주말
+    test.loc[(test['start_region_1'] == '제주시') & (test['month'] == k2) &
+              (test['day_of_week'] > 4) & (test['year'] == 2022), 'in_people'] = in_jeju_weekend_2022[k2 - 9]
+    test.loc[(test['start_region_1'] == '서귀포시') & (test['month'] == k2) &
+              (test['day_of_week'] > 4) & (test['year'] == 2022), 'in_people'] = in_west_weekend_2022[k2 - 9]
+
 # add feature
 train.loc[(train['maximum_speed_limit'] <= 40), 'road_types'] = 0  # 인접 도로
 train.loc[(train['maximum_speed_limit'] == 50), 'road_types'] = 1  # 도심부 도로
@@ -175,11 +196,9 @@ for haver2 in range(len(test)):
 
 # drop cols // 'multi_linked', 'connect_code'
 train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
-                    'start_node_name', 'start_region_2',
                     'start_region_3', 'end_region_3', 'start_region_1', 'end_region_1',
                     'vehicle_restricted', 'road_in_use'], inplace=True)
 test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
-                    'start_node_name', 'start_region_2',
                     'start_region_3', 'end_region_3', 'start_region_1', 'end_region_1',
                      'vehicle_restricted', 'road_in_use'], inplace=True)
 

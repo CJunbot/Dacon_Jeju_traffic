@@ -14,6 +14,8 @@ x = train.drop(columns=['target'])
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 test = pd.read_parquet('../data/test_after.parquet')
 
+print(f'train shape: {train.shape}')
+print(f'test shape: {test.shape}')
 bst = lgb.Booster(model_file='model2.txt')
 accuracy = mean_absolute_error(y_test, bst.predict(x_test))
 print(accuracy)
@@ -22,4 +24,4 @@ pred = bst.predict(test)
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = pred
-sample_submission.to_csv("../data/submit.csv", index=False)
+sample_submission.to_csv("../data/submit2.csv", index=False)
