@@ -23,18 +23,24 @@ weight restriced에 따른 교량등급-교량이 아니면 일반도로로? 지
 
 !t시점의 연말의 차량수
 ----------------------------------------
-start_end : 평균을 내볼까?
-
-결측치 : 둘이 합치기?
-
-나머지 encoding 도 catboost로?
-
-catfeature 뭐뭐 넣어야되지..
-
-catboost + lgbm?
-----------------------------------------
 !!t시점의 인구수 / 밀도? - 코드 마저 짜야댐
 
 !!버스정류장-동별 총개수 - 코드 짜야댐
 ----------------------------------------
 !!!날씨, 온도, 시정거리 - 자료부터 구해야댐
+----------------------------------------
+@@@ 하나씩 하면서 제출해보기 @@@
+vanilla                                                            | 3.2068
+start_region1,2 drop                                               | 3.2066
+Population_per_region                                              |
+day_of_week catboost encoder 바꿔보기                                |
+stratified k fold                                                  |
+이상치 제거                                                          |
+log1, expm1 ??                                                     |
+start_end : 평균을 내볼까? PCA?                                      |
+결측치 : 둘이 합치기?                                                 |
+나머지 encoding 도 catboost로? -> day of week?                       |
+train data를 정렬해서? road name -> 날짜 -> 시간순으로 ?                |
+catfeature 뭐뭐 넣어야되지.. -> discrete numercial data는 넣지 않기!    |
+catboost + lgbm?                                                   |
+

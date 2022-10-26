@@ -27,19 +27,22 @@ def objective(trial):
                      cat_features=['day_of_week', 'road_name', 'road_rating', 'connect_code', 'road_type',
                                    'start_node_name',
                                    'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
-    param = {}
-    param['random_state'] = 42
-    param['eval_metric'] = 'RMSE'
-    param['task_type'] = 'GPU'
-    param['iterations'] = 2000
-    param['learning_rate'] = 0.1
-    param['depth'] = trial.suggest_int('depth', 4, 15)
-    param['l2_leaf_reg'] = trial.suggest_float('l2_leaf_reg', 2, 10)
-    param['min_child_samples'] = trial.suggest_int('min_data_in_leaf', 1, 50)
-    param['random_strength'] = trial.suggest_float('random_strength', 0, 10)
+    param = {
+              "random_state":42,
+               'learning_rate' : trial.suggest_loguniform('learning_rate', 0.01, 0.05),
+               'bagging_temperature' :trial.suggest_loguniform('bagging_temperature', 0.01, 100.00),
+               "n_estimators":trial.suggest_int("n_estimators", 500, 5000),
+               "max_depth":trial.suggest_int("max_depth", 4, 16),
+              'random_strength' :trial.suggest_int('random_strength', 0, 100),
+               "colsample_bylevel":trial.suggest_float("colsample_bylevel", 0.4, 1.0),
+               "l2_leaf_reg":trial.suggest_float("l2_leaf_reg",1e-8,3e-5),
+               "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
+               "max_bin": trial.suggest_int("max_bin", 200, 500),
+               'od_type': trial.suggest_categorical('od_type', ['IncToDec', 'Iter']),
+           }
 
     regressor = CatBoostRegressor(**param)
-    regressor.fit(train_pool, eval_set=[val_pool], early_stopping_rounds=20)
+    regressor.fit(train_pool, eval_set=[train_pool, val_pool], early_stopping_rounds=35, verbose=100)
     loss = mean_absolute_error(y_test, regressor.predict(test_pool))
     return loss
 
