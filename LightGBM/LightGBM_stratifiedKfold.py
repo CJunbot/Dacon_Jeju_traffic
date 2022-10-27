@@ -35,7 +35,7 @@ for fold in range(5):
   params['metric'] = 'MAE'
   params['device_type'] = 'gpu'
   params['boosting_type'] = 'gbdt'
-  params['learning_rate'] = 0.02136291374083868
+  params['learning_rate'] = 0.1136291374083868
   # 예측력 상승
   params['num_iterations'] = 5000  # = num round, num_boost_round
   params['min_child_samples'] = 110
@@ -67,4 +67,4 @@ y_pred /= 5
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
-sample_submission.to_csv("../data/submit_fold.csv", index=False)
+sample_submission.to_csv("../data/submit_stratify_fold.csv", index=False)
