@@ -28,18 +28,21 @@ def objective(trial):
                                    'start_node_name',
                                    'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
     param = {
-              "random_state":42,
-               'learning_rate' : trial.suggest_loguniform('learning_rate', 0.01, 0.05),
-               'bagging_temperature' :trial.suggest_loguniform('bagging_temperature', 0.01, 100.00),
-               "n_estimators":trial.suggest_int("n_estimators", 500, 5000),
-               "max_depth":trial.suggest_int("max_depth", 4, 16),
-              'random_strength' :trial.suggest_int('random_strength', 0, 100),
-               "colsample_bylevel":trial.suggest_float("colsample_bylevel", 0.4, 1.0),
-               "l2_leaf_reg":trial.suggest_float("l2_leaf_reg",1e-8,3e-5),
-               "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
-               "max_bin": trial.suggest_int("max_bin", 200, 500),
-               'od_type': trial.suggest_categorical('od_type', ['IncToDec', 'Iter']),
-           }
+        "loss_function": trial.suggest_categorical("loss_function", ["RMSE", "MAE"]),
+        "learning_rate": trial.suggest_loguniform("learning_rate", 1e-5, 1e0),
+        "l2_leaf_reg": trial.suggest_loguniform("l2_leaf_reg", 1e-2, 1e0),
+        "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.01, 0.1),
+        "depth": trial.suggest_int("depth", 1, 10),
+        "boosting_type": trial.suggest_categorical("boosting_type", ["Ordered", "Plain"]),
+        "bootstrap_type": trial.suggest_categorical("bootstrap_type", ["Bayesian", "Bernoulli", "MVS"]),
+        "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 2, 20),
+        "one_hot_max_size": trial.suggest_int("one_hot_max_size", 2, 20),
+    }
+    # Conditional Hyper-Parameters
+    if param["bootstrap_type"] == "Bayesian":
+        param["bagging_temperature"] = trial.suggest_float("bagging_temperature", 0, 10)
+    elif param["bootstrap_type"] == "Bernoulli":
+        param["subsample"] = trial.suggest_float("subsample", 0.1, 1)
 
     regressor = CatBoostRegressor(**param)
     regressor.fit(train_pool, eval_set=[train_pool, val_pool], early_stopping_rounds=35, verbose=100)
@@ -63,3 +66,4 @@ if __name__ == "__main__":
     for key, value in trial.params.items():
         print("    {}: {}".format(key, value))
 
+    optuna.visualization.plot_param_importances(study)

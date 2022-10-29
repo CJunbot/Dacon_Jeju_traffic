@@ -14,7 +14,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 400)
 
-train = pd.read_parquet('../data/train_address_pop.parquet')
+train = pd.read_parquet('../data/train_after.parquet')
 test = pd.read_parquet('../data/test_after.parquet')
 
 print(train.shape)

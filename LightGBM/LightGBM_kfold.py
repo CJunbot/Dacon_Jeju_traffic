@@ -26,7 +26,7 @@ for tr_idx, val_idx in kf.split(x):
     params['metric'] = 'MAE'
     params['device_type'] = 'gpu'
     params['boosting_type'] = 'gbdt'
-    params['learning_rate'] = 0.02136291374083868
+    params['learning_rate'] = 0.05136291374083868
     # 예측력 상승
     params['num_iterations'] = 5000  # = num round, num_boost_round
     params['min_child_samples'] = 110

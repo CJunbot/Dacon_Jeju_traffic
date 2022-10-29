@@ -33,13 +33,13 @@ t시점의 인구수
 vanilla                                                            | 3.2068
 start_region1,2 drop                                               | 3.2067
 결측치 : 둘이 합치기?, + drop                                         | 3.2086
-Population_per_region                                              |
-day_of_week catboost encoder 바꿔보기                                |
+Population_per_region                                              | 3.2027
+day_of_week catboost encoder 바꿔보기                                | 3.6721
+이상치 제거                                                          | 3.2026
 stratified k fold                                                  |
-이상치 제거                                                          |
+fold 10으로 늘리기                                                   |
 몇시간전의 값 넣어주기                                                 |
 start_end : 평균을 내볼까? PCA?                                      |
-나머지 encoding 도 catboost로? -> day of week?                       |
 train data를 정렬해서? road name -> 날짜 -> 시간순으로 ?                |
 catboost + lgbm?                                                   |
 

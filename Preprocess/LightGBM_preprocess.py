@@ -13,8 +13,8 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 1000)
 
-train = pd.read_parquet('../data/train_address_pop.parquet')
-test = pd.read_parquet('../data/test_address_pop.parquet')
+train = pd.read_parquet('../data/train_address.parquet')
+test = pd.read_parquet('../data/test_address.parquet')
 
 # Missing value handle
 train.loc[(train['start_node_name'] == train['end_node_name']), 'road_name'] = train['start_node_name']
@@ -32,6 +32,7 @@ test['day'] = test['base_date'].apply(extract_day)
 for index, embark in enumerate(['월', '화', '수', '목', '금', '토', '일']):
     train.loc[(train['day_of_week'] == embark), 'day_of_week'] = index
     test.loc[(test['day_of_week'] == embark), 'day_of_week'] = index
+
 for index, embark in enumerate(['없음', '있음']):
     train.loc[(train['start_turn_restricted'] == embark), 'start_turn_restricted'] = index
     test.loc[(test['start_turn_restricted'] == embark), 'start_turn_restricted'] = index
