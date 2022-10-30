@@ -21,9 +21,10 @@ val_pool = Pool(x_val, y_val,
 
 # specify the training parameters
 cb_model = CatBoostRegressor(
-                             learning_rate=0.5,
+                             learning_rate=0.8,
                              n_estimators=30000,
-                             devices='GPU',
+                             devices='0:1',
+                             task_type='GPU',
                              eval_metric='RMSE',
                              random_seed=42,
                              metric_period=50)
