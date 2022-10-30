@@ -1,7 +1,7 @@
 import pandas as pd
-import category_encoders as ce
+from scipy.stats import skew
 from haversine import haversine
-
+import numpy as np
 def extract_year(row):
     return int(str(row)[0:4])
 def extract_month(row):
@@ -220,6 +220,12 @@ for haver2 in range(len(test)):
     start = ((test['start_latitude'][haver2]), (test['start_longitude'][haver2]))  # (lat, lon)
     goal = ((test['end_latitude'][haver2]), (test['end_longitude'][haver2]))  # (lat, lon)
     test['km'][haver2] = haversine(start, goal)
+
+# 이상치 제거
+features_index = ['km', 'start_bus_km', 'end_bus_km', 'population_dong', 'population_dong2']
+skew_features = train[features_index].apply(lambda x: skew(x))
+train[skew_features.index] = np.log1p(train[skew_features.index])
+test[skew_features.index] = np.log1p(test[skew_features.index])
 
 # drop cols // 'multi_linked', 'connect_code'
 train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',

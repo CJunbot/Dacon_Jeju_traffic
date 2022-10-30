@@ -31,15 +31,18 @@ t시점의 인구수
 ----------------------------------------
 @@@ 하나씩 하면서 제출해보기 @@@
 vanilla                                                            | 3.2068
-start_region1,2 drop                                               | 3.2067
-결측치 : 둘이 합치기?, + drop                                         | 3.2086
-Population_per_region                                              | 3.2027
-day_of_week catboost encoder 바꿔보기                                | 3.6721
-이상치 제거                                                          | 3.2026
-stratified k fold                                                  |
-fold 10으로 늘리기                                                   |
+start_region1,2 drop                                               | 3.2067  ↑
+결측치 : 둘이 합치기?, + drop                                         | 3.2086  ↓
+Population_per_region                                              | 3.2027  ↑
+day_of_week catboost encoder 바꿔보기                                | 3.6721  ↓
+이상치 제거                                                          | 3.2026  ↑
+stratified k fold                                                  | 3.2066  ↓
+fold 10으로 늘리기                                                   | 3.1985  ↑
+결측치 end node name로 채워보기(fold10)                               | 3.2007  ↓
+이상치 제거2                                                         | 3.2037  ↓
+동별 정류장                                                          | 3.1932  ↑
+이상치 제거(population1,2 int형으로)                                  | 3.2007  ↓
+region_3 결측치 region2로 채우기                                      |
 몇시간전의 값 넣어주기                                                 |
-start_end : 평균을 내볼까? PCA?                                      |
-train data를 정렬해서? road name -> 날짜 -> 시간순으로 ?                |
 catboost + lgbm?                                                   |
 

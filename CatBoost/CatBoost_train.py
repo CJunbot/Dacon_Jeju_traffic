@@ -1,6 +1,7 @@
 import pandas as pd
 from catboost import Pool, CatBoostRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error as mae
 
 # initialize data
 train = pd.read_parquet('../data/train_cat.parquet')
@@ -20,8 +21,8 @@ val_pool = Pool(x_val, y_val,
 
 # specify the training parameters
 cb_model = CatBoostRegressor(
-                             learning_rate=0.08,
-                             n_estimators=50000,
+                             learning_rate=0.5,
+                             n_estimators=30000,
                              devices='GPU',
                              eval_metric='RMSE',
                              random_seed=42,
@@ -30,7 +31,9 @@ cb_model = CatBoostRegressor(
 #param['random_strength'] = 5
 
 # train the model
-cb_model.fit(train_pool, eval_set=(val_pool), early_stopping_rounds=30, verbose=100, use_best_model=True)
-
+cb_model.fit(train_pool, eval_set=(val_pool), early_stopping_rounds=25, verbose=100, use_best_model=True)
+y_pred = cb_model.predict(x_val)
+MAE = mae(y_val, y_pred)
+print(MAE)
 # make the prediction using the resulting model
 cb_model.save_model('model.cbm')
