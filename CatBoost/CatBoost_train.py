@@ -24,10 +24,13 @@ cb_model = CatBoostRegressor(
                              learning_rate=0.8,
                              n_estimators=30000,
                              devices='0:1',
-                             task_type='GPU',
+                             task_type='CPU',
                              eval_metric='RMSE',
                              random_seed=42,
-                             metric_period=50)
+                             metric_period=10)
+
+#cb_model = CatBoostRegressor(learning_rate=0.04, n_estimators=3000, max_depth=8, devices='0:1', task_type='GPU', eval_metric='RMSE', random_seed=42, metric_period=50)
+# 위에 모델이 3.25, 0.8로는 수렴했어도 3.43
 #param['l2_leaf_reg'] = 2
 #param['random_strength'] = 5
 

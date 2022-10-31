@@ -28,12 +28,12 @@ def objective(trial):
                                    'start_node_name',
                                    'start_turn_restricted', 'end_node_name', 'end_turn_restricted'])
     param = {
-        "loss_function": trial.suggest_categorical("loss_function", ["RMSE", "MAE"]),
-        "learning_rate": trial.suggest_loguniform("learning_rate", 1e-5, 1e0),
+        "loss_function": "RMSE",
+        "learning_rate": trial.suggest_loguniform("learning_rate", 1e-5, 1e0),  # 중요도 1
         "l2_leaf_reg": trial.suggest_loguniform("l2_leaf_reg", 1e-2, 1e0),
-        "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.01, 0.1),
-        "depth": trial.suggest_int("depth", 1, 10),
-        "boosting_type": trial.suggest_categorical("boosting_type", ["Ordered", "Plain"]),
+        "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.01, 0.1),  # 중요도 2
+        "depth": trial.suggest_int("depth", 6, 40),  # 중요도 3
+        "boosting_type": "Plain",
         "bootstrap_type": trial.suggest_categorical("bootstrap_type", ["Bayesian", "Bernoulli", "MVS"]),
         "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 2, 20),
         "one_hot_max_size": trial.suggest_int("one_hot_max_size", 2, 20),
