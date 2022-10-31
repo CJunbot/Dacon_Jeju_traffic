@@ -10,7 +10,7 @@ test = pd.read_parquet('../data/test_after.parquet')
 y = train['target']
 x = np.array(train.drop(columns=['target']))
 
-n_splits = 5
+n_splits = 10
 kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 y_pred = np.zeros(len(test))
@@ -39,7 +39,7 @@ for tr_idx, val_idx in kf.split(x):
     model = RandomForestRegressor(**params)
     model.fit(x_train, y_train)
 
-    y_pred += model.predict(x_val)
+    y_pred += model.predict(test)
 
 y_pred /= 5
 

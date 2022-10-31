@@ -13,7 +13,6 @@ x = np.array(train.drop(columns=['target']))
 x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.1, random_state=42, shuffle=True)
 
 params = {
-    "criterion": "absolute_error",  # mae
     "n_estimators": 300,
     "min_samples_split": 10,  # 8~
     "max_depth": 10,  # 6~100
