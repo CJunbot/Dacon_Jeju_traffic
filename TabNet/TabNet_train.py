@@ -8,8 +8,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as plt
 
-train = pd.read_parquet('../data/train_after.parquet')
-test = pd.read_parquet('../data/test_after.parquet')
+train = pd.read_parquet('../data/train_rf.parquet')
+test = pd.read_parquet('../data/test_rf.parquet')
 
 y = train['target']
 x = train.drop(columns=['target'])
@@ -17,6 +17,7 @@ x = train.drop(columns=['target'])
 x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_state=42, shuffle=True)
 
 seed = 42
+
 
 def seed_everything(seed):
     random.seed(seed)
@@ -35,29 +36,30 @@ clf = TabNetRegressor(n_d=16,
                        n_independent=4,
                        n_shared=5,
                        seed=seed,
+                       verbose=1,
                        device_name=device,
                        optimizer_fn = torch.optim.Adam,
-                       cat_idxs=cat_idxs,
-                       scheduler_params = {"milestones": [150,250,300,350,400,450],'gamma':0.2},
+                       scheduler_params = {"milestones": [150,250,300,350,400,450],'gamma':0.2},  #  {"milestones": [150,250,300,350,400,450],'gamma':0.2}
                        scheduler_fn=torch.optim.lr_scheduler.MultiStepLR)
 
 aug = RegressionSMOTE(p=0.2)
 
 clf.fit(
-    X_train=x_train, y_train=y_train,
-    eval_set=[(x, y_train), (x_val, y_val)],
-    eval_name=['train', 'valid'],
+    X_train=x_train.values, y_train=y_train.values.reshape(-1,1),
+    eval_set=[(x_val.values, y_val.values.reshape(-1,1))],
     eval_metric=['mae'],
-    max_epochs=1000,
-    patience=70,
+    max_epochs=200,
+    patience=70,  # early stopping
     batch_size=1024, virtual_batch_size=128,
     num_workers=0,
     drop_last=False,
-    weights=1,  # 0?
     augmentations=aug,  # aug
 )
 
-plt.figure(figsize=(12,6))
+saving_path_name = "./tabnet_model_test_1"
+saved_filepath = clf.save_model(saving_path_name)
+
+plt.figure(figsize=(12, 6))
 plt.plot(clf.history['train']['loss'])
 plt.plot(clf.history['valid']['loss'])
 
