@@ -32,6 +32,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 n_splits = 5
 kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
+y_for_LR = np.zeros(len(train))
 y_pred = np.zeros(len(test))
 
 for tr_idx, val_idx in kf.split(x):
@@ -55,18 +56,17 @@ for tr_idx, val_idx in kf.split(x):
     aug = RegressionSMOTE(p=0.2)
 
     clf.fit(
-        X_train=x_train, y_train=y_train,
-        eval_set=[(x, y_train), (x_val, y_val)],
-        eval_name=['train', 'valid'],
+        X_train=x_train.values, y_train=y_train.values.reshape(-1, 1),
+        eval_set=[(x_val.values, y_val.values.reshape(-1, 1))],
         eval_metric=['mae'],
-        max_epochs=1000,
-        patience=70,
+        max_epochs=200,
+        patience=70,  # early stopping
         batch_size=1024, virtual_batch_size=128,
         num_workers=0,
         drop_last=False,
         augmentations=aug,  # aug
     )
-
+    y_for_LR[val_idx] = clf.predict(x_val)
     y_pred += clf.predict(test)
 
 y_pred /= n_splits
@@ -74,3 +74,6 @@ y_pred /= n_splits
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
 sample_submission.to_csv("../data/submit_TabNet.csv", index=False)
+
+df = pd.DataFrame(y_for_LR)
+df.to_csv('cat_LR.csv', index=False)
