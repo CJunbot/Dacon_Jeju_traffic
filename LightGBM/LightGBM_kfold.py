@@ -22,24 +22,28 @@ for tr_idx, val_idx in kf.split(x):
     y_train, y_val = y[tr_idx], y[val_idx]
 
     params = {}
-    params['objective'] = 'reg:squaredlogerror'
-    params['eval_metric'] = 'rmse'
-    params['gpu_id'] = 1
-    params['tree_method'] = 'gpu_hist'
-    params['learning_rate'] = 0.043119110575691373  # 0.010 -> 2.884 / 0.028 -> 2.885 / 0.058 -> 2.893
+    params['objective'] = 'regression'
+    params["verbose"] = 1
+    params['metric'] = 'mae'
+    params['device_type'] = 'gpu'
+    params['boosting_type'] = 'gbdt'
+    params['learning_rate'] = 0.013119110575691373  # 0.013119로 고치면 댐
     # 예측력 상승
-    params['n_estimators'] = 17488  # 8500
-    params['max_leaves'] = 10252  # 100~15000
-    params['max_depth'] = 40  # 6~40?
+    params['num_iterations'] = 5000  # = num round, num_boost_round
+    params['min_child_samples'] = 118
+    params['n_estimators'] = 15918  # 8500
+    params['subsample'] = 0.6194512025053622
+    params['num_leaves'] = 7868
+    params['max_depth'] = 35  # 26?
     # overfitting 방지
-    params['min_child_weight'] = 0.7628373492320147  # 높을수록 / 0~무한대 6?
-    params['subsample'] = 0.9028492555488905  # 낮을수록 overfitting down / 0.5~1  = bagging_fraction
-    params['reg_alpha'] = 0.2110959615938186  # = lambda l1
-    params['reg_lambda'] = 0.43112763032873236  # = lambda l2
-    params['min_split_loss'] = 0.011470395498020328  # = gamma
-    params['colsample_bytree'] = 0.9997889205965167  # 낮을수록 overfitting down / 0~1  = feature_fraction
-    params['colsample_bylevel'] = 0.9304625814875158
-    params['colsample_bynode'] = 0.9126534090841069
+    params['min_child_weight'] = 0.7628373492320147  # 높을수록 / 최대 6?
+    params['min_child_samples'] = 41  # 100 500 ?
+    params['subsample'] = 0.7611163934517731  # 낮을수록 overfitting down / 최소 0  = bagging_fraction
+    params['subsample_freq'] = 76
+    params['reg_alpha'] = 0.46641059279049957  # = lambda l1
+    params['reg_lambda'] = 0.30503746605875  # = lambda l2
+    params['min_gain_to_split'] = 0.05443147365335205  # = min_split_gain
+    params['colsample_bytree'] = 0.9009386979948221  # 낮을 수록 overfitting down / 최소 0  = feature_fraction
 
     bst = LGBMRegressor(**params)
     bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='MAE', early_stopping_rounds=25)
@@ -50,7 +54,7 @@ y_pred /= n_splits
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
-sample_submission.to_csv("../data/submit_fold.csv", index=False)
+sample_submission.to_csv("../data/submit_lgbm_fold.csv", index=False)
 
 df = pd.DataFrame(y_for_LR)
 df.to_csv('LGBM_LR.csv', index=False)

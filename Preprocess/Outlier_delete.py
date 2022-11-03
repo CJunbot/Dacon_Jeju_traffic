@@ -20,5 +20,5 @@ skew_features = train[features_index].apply(lambda x: skew(x))
 test[skew_features.index] = np.log1p(test[skew_features.index])
 print(skew_features)
 
-train.to_parquet('../data/train_after.parquet', index=False)
-test.to_parquet('../data/test_after.parquet', index=False)
+#train.to_parquet('../data/train_after.parquet', index=False)
+#test.to_parquet('../data/test_after.parquet', index=False)

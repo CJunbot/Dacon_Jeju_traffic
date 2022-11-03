@@ -46,3 +46,9 @@ region_3 결측치 region2로 채우기                                      |
 몇시간전의 값 넣어주기                                                 |
 catboost + lgbm?                                                   |
 
+
+base(새로운 lgbm parameter, train 1)                                | 3.2673
+base_day_night 추가
+일출/일몰 추가
+지방도, 일반도, 교량 추가
+금요일이면 1, 아니면 0 추가
