@@ -29,9 +29,9 @@ seed_everything(seed)
 cat_idxs = [x.columns.get_loc(c) for c in x.select_dtypes(exclude='float32').columns]
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-clf = TabNetRegressor(n_d=16,
-                       n_a=16,
-                       n_steps=4,
+clf = TabNetRegressor(n_d=32,
+                       n_a=32,
+                       n_steps=6,
                        gamma=1.9,
                        n_independent=4,
                        n_shared=5,
@@ -39,9 +39,9 @@ clf = TabNetRegressor(n_d=16,
                        verbose=1,
                        device_name=device,
                        optimizer_fn = torch.optim.Adam,
-                       scheduler_params = {"milestones": [150,250,300,350,400,450],'gamma':0.2},  #  {"milestones": [150,250,300,350,400,450],'gamma':0.2}
-                       scheduler_fn=torch.optim.lr_scheduler.MultiStepLR)
-
+                       optimizer_params = dict(lr=8e-2, weight_decay=2e-5),  # 2e-2
+                       scheduler_params = dict(mode="min", patience=5, min_lr=4e-2, factor=0.5),  # 1e-2,  #  {"milestones": [150,250,300,350,400,450],'gamma':0.2}
+                       scheduler_fn = torch.optim.lr_scheduler.ReduceLROnPlateau)
 aug = RegressionSMOTE(p=0.2)
 
 clf.fit(
@@ -49,12 +49,18 @@ clf.fit(
     eval_set=[(x_val.values, y_val.values.reshape(-1,1))],
     eval_metric=['mae'],
     max_epochs=200,
-    patience=70,  # early stopping
-    batch_size=1024, virtual_batch_size=128,
+    patience=25,  # early stopping
+    batch_size=5120, virtual_batch_size=640,
     num_workers=0,
     drop_last=False,
     augmentations=aug,  # aug
 )
+
+y_pred = clf.predict(test)
+sample_submission = pd.read_csv('../data/sample_submission.csv')
+sample_submission['target'] = y_pred
+sample_submission.to_csv("../data/submit_TabNet.csv", index=False)
+
 
 saving_path_name = "./tabnet_model_test_1"
 saved_filepath = clf.save_model(saving_path_name)
@@ -65,10 +71,7 @@ plt.plot(clf.history['valid']['loss'])
 
 pd.Series(clf.feature_importances_, index=x.columns).plot.bar(title=f'TabNet Global Feature Importances')
 
-y_pred = clf.predict(test)
-sample_submission = pd.read_csv('../data/sample_submission.csv')
-sample_submission['target'] = y_pred
-sample_submission.to_csv("../data/submit_TabNet.csv", index=False)
+
 
 
 

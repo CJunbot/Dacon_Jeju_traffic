@@ -1,7 +1,9 @@
 import pandas as pd
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
+from lightgbm import plot_importance
 from sklearn.metrics import mean_absolute_error
+import matplotlib.pyplot as plt
 
 train = pd.read_parquet('../data/train_after.parquet')
 
@@ -36,6 +38,9 @@ params['colsample_bytree'] = 0.9009386979948221  # 낮을수록 overfitting down
 
 bst = lgb.LGBMRegressor(**params)
 bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='mae', early_stopping_rounds=25)
+fig, ax = plt.subplots(figsize=(12,6))
+plot_importance(bst, max_num_features=40, ax=ax)
+plt.show()
 #pred = bst.predict(x_test, num_iteration=bst.best_iteration_)
 #MAE = mean_absolute_error(y_test, pred)
 #print('The MAE of prediction is:', MAE)

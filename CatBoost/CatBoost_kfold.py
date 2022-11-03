@@ -1,7 +1,5 @@
 import pandas as pd
 from catboost import Pool, CatBoostRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error as mae
 from sklearn.model_selection import KFold
 import numpy as np
 
@@ -38,9 +36,9 @@ for tr_idx, val_idx in kf.split(x):
 
     # specify the training parameters
     cb_model = CatBoostRegressor(
-                                 learning_rate=0.079,  # 0.025
+                                 learning_rate=0.045,  # 0.025
                                  depth=15,
-                                 n_estimators=5000,  # 10000 -> 1시간 반정도
+                                 n_estimators=10000,  # 10000 -> 1시간 반정도
                                  bootstrap_type='Bernoulli',
                                  devices='0:1',
                                  task_type='GPU',
