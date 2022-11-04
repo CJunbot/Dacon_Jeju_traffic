@@ -1,4 +1,3 @@
-from sklearn.model_selection import train_test_split
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import KFold
 import numpy as np
@@ -13,6 +12,7 @@ x = np.array(train.drop(columns=['target']))
 n_splits = 10
 kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
+y_for_LR_fold = np.zeros(len(train))
 y_for_LR = np.zeros(len(train))
 y_pred = np.zeros(len(test))
 
@@ -47,14 +47,21 @@ for tr_idx, val_idx in kf.split(x):
 
     bst = LGBMRegressor(**params)
     bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='MAE', early_stopping_rounds=25)
-    y_for_LR[val_idx] = bst.predict(x_val)
+
+    # for Ensemble LR
+    y_for_LR_fold += bst.predict(x, num_iteration=bst.best_iteration_)
+    y_for_LR[val_idx] = bst.predict(x_val, num_iteration=bst.best_iteration_)
     y_pred += bst.predict(test, num_iteration=bst.best_iteration_)
 
 y_pred /= n_splits
+y_for_LR_fold /= n_splits
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
-sample_submission.to_csv("../data/submit_lgbm_fold.csv", index=False)
+sample_submission.to_csv("../data/submit_LGBM_fold.csv", index=False)
 
 df = pd.DataFrame(y_for_LR)
 df.to_csv('LGBM_LR.csv', index=False)
+
+df_fold = pd.DataFrame(y_for_LR_fold)
+df_fold.to_csv('LGBM_LR_fold.csv', index=False)

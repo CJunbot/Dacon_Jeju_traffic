@@ -14,8 +14,8 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', 1000)
 
-train = pd.read_parquet('../data/train_after.parquet')
-test = pd.read_parquet('../data/test_after.parquet')
+train = pd.read_parquet('../data/train_after_test.parquet')
+test = pd.read_parquet('../data/test_after_test.parquet')
 
 print(train.shape)
 print("-----------------------------------")

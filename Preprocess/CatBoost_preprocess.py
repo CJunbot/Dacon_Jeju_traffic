@@ -2,12 +2,15 @@ import pandas as pd
 from scipy.stats import skew
 from haversine import haversine
 import numpy as np
+
+
 def extract_year(row):
     return int(str(row)[0:4])
 def extract_month(row):
     return int(str(row)[4:6])
 def extract_day(row):
     return int(str(row)[6:])
+
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -19,8 +22,8 @@ test = pd.read_parquet('../data/test_address.parquet')
 # Missing value handle
 train.loc[(train['start_node_name'] == train['end_node_name']), 'road_name'] = train['start_node_name']
 test.loc[(test['start_node_name'] == test['end_node_name']), 'road_name'] = test['start_node_name']
-train.loc[(train['road_name'] == '-'), 'road_name'] = (train['start_node_name'] + train['end_node_name'])
-test.loc[(test['road_name'] == '-'), 'road_name'] = (test['start_node_name'] + test['end_node_name'])
+train.loc[(train['road_name'] == '-'), 'road_name'] = train['end_node_name']
+test.loc[(test['road_name'] == '-'), 'road_name'] = test['end_node_name']
 
 # separate base date to year, month, day
 train['year'] = train['base_date'].apply(extract_year)
@@ -57,11 +60,11 @@ test.loc[(test['start_region_1'] == '서귀포시'), 'start_region_1'] = 1
 test.loc[(test['end_region_1'] == '제주시'), 'end_region_1'] = 0
 test.loc[(test['end_region_1'] == '서귀포시'), 'end_region_1'] = 1
 
-# Region2, 3 합치기(3에 결측치가 많아서)
-train['start_region_2'] = train['start_region_2'] + train['start_region_3']
-train['end_region_2'] = train['end_region_2'] + train['end_region_3']
-test['start_region_2'] = test['start_region_2'] + test['start_region_3']
-test['end_region_2'] = test['end_region_2'] + test['end_region_3']
+# Region_3 결측치 채우기
+train.loc[(train['start_region_3'] == ''), 'start_region_3'] = train['start_region_2']
+test.loc[(test['start_region_3'] == ''), 'start_region_3'] = test['start_region_2']
+train.loc[(train['end_region_3'] == ''), 'end_region_3'] = train['end_region_2']
+test.loc[(test['end_region_3'] == ''), 'end_region_3'] = test['end_region_2']
 
 # Category Encoder
 train['road_name'] = train['road_name'].replace('-', None)

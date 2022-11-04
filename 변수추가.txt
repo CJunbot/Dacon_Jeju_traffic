@@ -42,13 +42,14 @@ fold 10으로 늘리기                                                   | 3.19
 이상치 제거2                                                         | 3.2037  ↓
 동별 정류장                                                          | 3.1932  ↑
 이상치 제거(population1,2 int형으로)                                  | 3.2007  ↓
-region_3 결측치 region2로 채우기                                      |
-몇시간전의 값 넣어주기                                                 |
 catboost + lgbm?                                                   |
 
-
 base(새로운 lgbm parameter, train 1)                                | 3.2673
-base_day_night 추가
-일출/일몰 추가
-지방도, 일반도, 교량 추가
-금요일이면 1, 아니면 0 추가
+region_3 결측치 region2로 채우기                                      | 3.2600 ↑
+base_day_night 추가                                                 | 3.2622 ↓ -- 학습률 탓? ㅠ
+일출/일몰 추가                                                       | 3.2731  ↓ -- boruta에선 좋다하는데.. 분포도 좋음 (train, test모두)
+지방도, 일반도, 교량 추가                                              |
+금요일이면 1, 아니면 0 추가                                            |
+in_people - out_people                                             |
+car/population_dong                                                |
+

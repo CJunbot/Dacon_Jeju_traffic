@@ -6,6 +6,7 @@ from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as plt
 
 train = pd.read_parquet('../data/train_after_test.parquet')
+test = pd.read_parquet('../data/test_after_test.parquet')
 
 y = train['target']
 x = train.drop(columns=['target'])
@@ -44,5 +45,11 @@ plt.show()
 pred = bst.predict(x_val, num_iteration=bst.best_iteration_)
 MAE = mean_absolute_error(y_val, pred)
 print('The MAE of prediction is:', MAE)
+
+pred = bst.predict(test, num_iteration=bst.best_iteration_)
+
+sample_submission = pd.read_csv('../data/sample_submission.csv')
+sample_submission['target'] = pred
+sample_submission.to_csv("../data/submit_lgbm.csv", index=False)
 
 bst.booster_.save_model('model2.txt')
