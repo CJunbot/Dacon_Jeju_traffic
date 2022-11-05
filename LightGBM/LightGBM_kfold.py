@@ -1,4 +1,3 @@
-from sklearn.model_selection import train_test_split
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import KFold
 import numpy as np
@@ -47,7 +46,9 @@ for tr_idx, val_idx in kf.split(x):
 
     bst = LGBMRegressor(**params)
     bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='MAE', early_stopping_rounds=25)
-    y_for_LR[val_idx] = bst.predict(x_val)
+
+    y_for_LR[val_idx] = bst.predict(x_val, num_iteration=bst.best_iteration_)
+
     y_pred += bst.predict(test, num_iteration=bst.best_iteration_)
 
 y_pred /= n_splits
