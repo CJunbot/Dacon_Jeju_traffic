@@ -1,10 +1,9 @@
-import numpy as np
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 from lightgbm import LGBMRegressor
 from boruta import BorutaPy
 
-train = pd.read_parquet('../data/train_after.parquet')
+train = pd.read_parquet('../data/train_after_test.parquet')
+train.drop(columns=['road_name'], inplace=True)
 
 y = train['target']
 x = train.drop(columns=['target'])
@@ -15,3 +14,5 @@ feat_selector.fit(x.values, y.values)
 
 # Check the selected features
 print(x.columns[feat_selector.support_])
+
+print(x.columns-x.columns[feat_selector.support_])

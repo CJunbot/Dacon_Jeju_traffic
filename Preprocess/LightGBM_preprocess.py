@@ -58,15 +58,21 @@ test.loc[(test['start_region_1'] == '서귀포시'), 'start_region_1'] = 1
 test.loc[(test['end_region_1'] == '제주시'), 'end_region_1'] = 0
 test.loc[(test['end_region_1'] == '서귀포시'), 'end_region_1'] = 1
 
-# Region2, 3 합치기(3에 결측치가 많아서)
-train['start_region_2'] = train['start_region_2'] + train['start_region_3']
-train['end_region_2'] = train['end_region_2'] + train['end_region_3']
-test['start_region_2'] = test['start_region_2'] + test['start_region_3']
-test['end_region_2'] = test['end_region_2'] + test['end_region_3']
+# Region2, 3 encoding, region_3 결측치 채우기
+train.loc[(train['start_region_3'] == ''), 'start_region_3'] = train['start_region_2']
+test.loc[(test['start_region_3'] == ''), 'start_region_3'] = test['start_region_2']
+train.loc[(train['end_region_3'] == ''), 'end_region_3'] = train['end_region_2']
+test.loc[(test['end_region_3'] == ''), 'end_region_3'] = test['end_region_2']
+
 for namen in ['start_region_2', 'end_region_2']:
     cat_encoder1 = ce.CatBoostEncoder(cols=[namen], handle_missing='return_nan')
     train[namen] = cat_encoder1.fit_transform(train[namen], train['target'])
     test[namen] = cat_encoder1.transform(test[namen])
+
+for namens in ['start_region_3', 'end_region_3']:
+    cat_encoder2 = ce.CatBoostEncoder(cols=[namens], handle_missing='return_nan')
+    train[namens] = cat_encoder2.fit_transform(train[namens], train['target'])
+    test[namens] = cat_encoder2.transform(test[namens])
 
 # Category Encoder
 train['road_name'] = train['road_name'].replace('-', None)
@@ -236,12 +242,12 @@ skew_features = train[features_index].apply(lambda x: skew(x))
 train[skew_features.index] = np.log1p(train[skew_features.index])
 test[skew_features.index] = np.log1p(test[skew_features.index])
 
-# drop cols // 'multi_linked', 'connect_code'
+# drop cols //                 'start_region_3', 'end_region_3',
 train.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
-                    'start_region_3', 'end_region_3', 'start_region_1', 'end_region_1',
+    'start_region_1', 'end_region_1',
                     'vehicle_restricted', 'road_in_use'], inplace=True)
 test.drop(columns=['id', 'base_date', 'height_restricted', 'multi_linked', 'connect_code',
-                    'start_region_3', 'end_region_3', 'start_region_1', 'end_region_1',
+    'start_region_1', 'end_region_1',
                    'vehicle_restricted', 'road_in_use'], inplace=True)
 
 print(train.head(50))
