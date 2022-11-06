@@ -5,8 +5,8 @@ from lightgbm import plot_importance
 from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as plt
 
-train = pd.read_parquet('../data/train_after_test.parquet')
-test = pd.read_parquet('../data/test_after_test.parquet')
+train = pd.read_parquet('../data/train_after.parquet')
+test = pd.read_parquet('../data/test_after.parquet')
 
 y = train['target']
 x = train.drop(columns=['target'])
@@ -19,12 +19,11 @@ params["verbose"] = 1
 params['metric'] = 'mae'
 params['device_type'] = 'gpu'
 params['boosting_type'] = 'gbdt'
-params['learning_rate'] = 0.13119110575691373  # 0.013119로 고치면 댐
+params['learning_rate'] = 0.013119110575691373  # 0.013119로 고치면 댐
 # 예측력 상승
 params['num_iterations'] = 5000  # = num round, num_boost_round
 params['min_child_samples'] = 118
 params['n_estimators'] = 15918  # 8500
-params['subsample'] = 0.6194512025053622
 params['num_leaves'] = 7868
 params['max_depth'] = 35  # 26?
 # overfitting 방지

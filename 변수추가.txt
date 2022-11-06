@@ -48,8 +48,9 @@ base(새로운 lgbm parameter, train 1)                                | 3.2673
 region_3 결측치 region2로 채우기                                      | 3.2600 ↑
 base_day_night 추가                                                 | 3.2622 ↓ -- 학습률 탓? ㅠ
 일출/일몰 추가                                                       | 3.2731  ↓ -- boruta에선 좋다하는데.. 분포도 좋음 (train, test모두)
-지방도, 일반도, 교량 추가                                              |
-금요일이면 1, 아니면 0 추가                                            |
-in_people - out_people                                             |
-car/population_dong                                                |
+금요일이면 1, 아니면 0 추가                                            | 3.2565 ↑
+in_people - out_people                                             | 3.3245 ↓
+car/population_dong                                                | 3.2534 ↑
 
+
+lgbm_no_fold                                                       | 3.2157 / 2.902

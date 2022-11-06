@@ -19,23 +19,22 @@ def objective(trial):
     params['metric'] = 'l1'
     params['device_type'] = 'gpu'
     params['boosting_type'] = 'gbdt'
-    params['learning_rate'] = trial.suggest_float("learning_rate", 0.005, 0.06)
+    params['learning_rate'] = trial.suggest_float("learning_rate", 0.009, 0.05)
     # 예측력 상승
-    params['num_iterations'] = 10000
-    params['min_child_samples'] = trial.suggest_int('min_child_samples', 100, 200)
-    params['n_estimators'] = trial.suggest_int('n_estimators', 8500, 20000)
-    params['subsample'] = trial.suggest_float('subsample', 0.6, 1)
-    params['num_leaves'] = trial.suggest_int('num_leaves', 5500, 15024)
-    params['max_depth'] = trial.suggest_int('max_depth', 28, 40)
+    params['num_iterations'] = 5000
+    params['min_child_samples'] = trial.suggest_int('min_child_samples', 100, 150)
+    params['n_estimators'] = trial.suggest_int('n_estimators', 15000, 25000)
+    params['num_leaves'] = trial.suggest_int('num_leaves', 7000, 15024)
+    params['max_depth'] = trial.suggest_int('max_depth', 33, 45)
     # overfitting 방지
-    params['min_child_weight'] = trial.suggest_float('min_child_weight', 0.4, 2)
-    params['min_child_samples'] = trial.suggest_int('min_child_samplesh', 30, 60)
-    params['bagging_fraction'] = trial.suggest_float('bagging_fraction', 0.3, 0.8)
-    params['lambda_l1'] = trial.suggest_float('lambda_l1', 0.05, 0.5)
-    params['lambda_l2'] = trial.suggest_float('lambda_l2', 0.05, 0.5)
-    params['subsample_freq'] = trial.suggest_int('subsample_freq', 50, 99)
+    params['min_child_weight'] = trial.suggest_float('min_child_weight', 0.5, 2)
+    params['min_child_samples'] = trial.suggest_int('min_child_samplesh', 35, 60)
+    params['bagging_fraction'] = trial.suggest_float('bagging_fraction', 0.5, 0.8)
+    params['subsample_freq'] = trial.suggest_int('subsample_freq', 70, 99)
+    params['lambda_l1'] = trial.suggest_float('lambda_l1', 0.2, 2)
+    params['lambda_l2'] = trial.suggest_float('lambda_l2', 0.2, 2)
     params['min_gain_to_split'] = trial.suggest_float('min_gain_to_split', 0.01, 3)
-    params['feature_fraction'] = trial.suggest_float('feature_fraction', 0.5, 0.91)
+    params['feature_fraction'] = trial.suggest_float('feature_fraction', 0.6, 1)
 
     # Generate model
     bst = lgb.LGBMRegressor(**params)
@@ -47,7 +46,7 @@ def objective(trial):
 
 if __name__ == "__main__":
     study = optuna.create_study(direction="minimize", sampler=sampler)
-    study.optimize(objective, n_trials=30)
+    study.optimize(objective, n_trials=40)
 
     print("Number of finished trials: {}".format(len(study.trials)))
 

@@ -224,8 +224,24 @@ for haver2 in range(len(test)):
     goal = ((test['end_latitude'][haver2]), (test['end_longitude'][haver2]))  # (lat, lon)
     test['km'][haver2] = haversine(start, goal)
 
+# 금요일이면 1, 아니면 0
+train.loc[(train['day_of_week'] == 4), 'friday'] = 1
+train['friday'] = train['friday'].fillna(0)
+test.loc[(test['day_of_week'] == 4), 'friday'] = 1
+test['friday'] = test['friday'].fillna(0)
+
+# 지역별 차량 수 추가
+train['car_per_dong'] = train['car']/train['population_dong']
+train['car_per_dong'] = train['car_per_dong'].astype(dtype='int64')
+train['car_per_dong2'] = train['car']/train['population_dong2']
+train['car_per_dong2'] = train['car_per_dong2'].astype(dtype='int64')
+test['car_per_dong'] = test['car']/test['population_dong']
+test['car_per_dong'] = test['car_per_dong'].astype(dtype='int64')
+test['car_per_dong2'] = test['car']/test['population_dong2']
+test['car_per_dong2'] = test['car_per_dong2'].astype(dtype='int64')
+
 # 이상치 제거
-features_index = ['km', 'start_bus_km', 'end_bus_km', 'population_dong', 'population_dong2']
+features_index = ['km', 'start_bus_km', 'end_bus_km', 'population_dong', 'population_dong2', 'car_per_dong', 'car_per_dong2']
 skew_features = train[features_index].apply(lambda x: skew(x))
 train[skew_features.index] = np.log1p(train[skew_features.index])
 test[skew_features.index] = np.log1p(test[skew_features.index])

@@ -2,18 +2,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-train = pd.read_parquet('../data/train_after_test.parquet')
-test = pd.read_parquet('../data/test_after_test.parquet')
+train = pd.read_parquet('../data/train_after.parquet')
+test = pd.read_parquet('../data/test_after.parquet')
 
 
-fig, axes = plt.subplots(2, 1, figsize=(20,10))
+fig, axes = plt.subplots(1, 1, figsize=(20,10))
 xticks = [i for i in range(25)]
 #axes.set_xticks(xticks)
 #axes.tick_params(labelsize=10)
 
-# sns.lineplot(x='base_hour',y='target',data=train).set(title='base_hour vs target') 숫자형 변수
-sns.countplot(x='sun', data=train, ax=axes[0])  # 범주형 변수
-sns.countplot(x='sun', data=test, ax=axes[1])  # 범주형 변수
+sns.histplot(x=train['car_per_dong'],kde=True)
+#sns.lineplot(x='base_hour',y='target',data=train).set(title='base_hour vs target')  # 숫자형 변수
+#sns.countplot(x='sun', data=train, ax=axes[0])  # 범주형 변수
+#sns.countplot(x='sun', data=test, ax=axes[1])  # 범주형 변수
 plt.tight_layout()
 plt.show()
 
