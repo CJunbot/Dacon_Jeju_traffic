@@ -63,4 +63,4 @@ sample_submission['target'] = y_pred
 sample_submission.to_csv("../data/submit_xgb_fold.csv", index=False)
 
 df = pd.DataFrame(y_for_LR)
-df.to_csv('XGB_LR.csv', index=False)
+df.to_parquet('XGB_LR.parquet', index=False)

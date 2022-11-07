@@ -12,7 +12,6 @@ x = train.drop(columns=['target'])
 n_splits = 10
 kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-y_for_LR_fold = np.zeros(len(train))
 y_for_LR = np.zeros(len(train))
 y_pred = np.zeros(len(test))
 
@@ -36,9 +35,6 @@ for tr_idx, val_idx in kf.split(x):
                      cat_features=['road_name', 'start_node_name', 'end_node_name',
                                    'start_region_2', 'end_region_2'])
 
-    val_pool_LR_fold = Pool(x,
-                     cat_features=['road_name', 'start_node_name', 'end_node_name',
-                                   'start_region_2', 'end_region_2'])
     # specify the training parameters
     cb_model = CatBoostRegressor(
                                  learning_rate=0.045,  # 0.025
@@ -57,20 +53,16 @@ for tr_idx, val_idx in kf.split(x):
     # train the model
     cb_model.fit(train_pool, eval_set=(val_pool), early_stopping_rounds=25, verbose=100, use_best_model=True)
     # for LR (Ensemble)
-    y_for_LR_fold += cb_model.predict(val_pool_LR_fold)
+
     y_for_LR[val_idx] = cb_model.predict(val_pool_LR)
     # make the prediction using the resulting model
     y_pred += cb_model.predict(test_pool)
 
 y_pred /= n_splits
-y_for_LR_fold /= n_splits
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
 sample_submission.to_csv("../data/submit_cat_fold.csv", index=False)
 
 df = pd.DataFrame(y_for_LR)
-df.to_csv('cat_LR.csv', index=False)
-
-df_fold = pd.DataFrame(y_for_LR_fold)
-df_fold.to_csv('cat_LR_fold.csv', index=False)
+df.to_parquet('cat_LR.parquet', index=False)

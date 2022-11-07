@@ -7,11 +7,13 @@ import matplotlib.pyplot as plt
 
 train = pd.read_parquet('../data/train_after.parquet')
 test = pd.read_parquet('../data/test_after.parquet')
+dist = pd.read_csv('../LR/LGBM_LR.csv')
 
 y = train['target']
 x = train.drop(columns=['target'])
-
+x = pd.concat([x,dist], axis=1)
 x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_state=42, shuffle=True)
+
 
 params = {}
 params['objective'] = 'regression'
@@ -35,6 +37,7 @@ params['reg_alpha'] = 0.46641059279049957  # = lambda l1
 params['reg_lambda'] = 0.30503746605875  # = lambda l2
 params['min_gain_to_split'] = 0.05443147365335205  # = min_split_gain
 params['colsample_bytree'] = 0.9009386979948221  # 낮을 수록 overfitting down / 최소 0  = feature_fraction
+params['seed'] = 42
 
 bst = lgb.LGBMRegressor(**params)
 bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='mae', early_stopping_rounds=25)

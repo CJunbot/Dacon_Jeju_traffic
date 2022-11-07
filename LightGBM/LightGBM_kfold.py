@@ -43,7 +43,6 @@ for tr_idx, val_idx in kf.split(x):
     params['reg_lambda'] = 0.30503746605875  # = lambda l2
     params['min_gain_to_split'] = 0.05443147365335205  # = min_split_gain
     params['colsample_bytree'] = 0.9009386979948221  # 낮을 수록 overfitting down / 최소 0  = feature_fraction
-
     bst = LGBMRegressor(**params)
     bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='MAE', early_stopping_rounds=25)
 
@@ -59,4 +58,4 @@ sample_submission['target'] = y_pred
 sample_submission.to_csv("../data/submit_LGBM_fold.csv", index=False)
 
 df = pd.DataFrame(y_for_LR)
-df.to_csv('LGBM_LR.csv', index=False)
+df.to_parquet('LGBM_LR.parquet', index=False)
