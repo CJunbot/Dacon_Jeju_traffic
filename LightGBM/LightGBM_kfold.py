@@ -2,6 +2,11 @@ from lightgbm import LGBMRegressor
 from sklearn.model_selection import KFold
 import numpy as np
 import pandas as pd
+import random
+import os
+
+
+os.environ['PYTHONHASHSEED'] = str(42)
 
 train = pd.read_parquet('../data/train_after.parquet')
 test = pd.read_parquet('../data/test_after.parquet')
@@ -26,23 +31,23 @@ for tr_idx, val_idx in kf.split(x):
     params['metric'] = 'mae'
     params['device_type'] = 'gpu'
     params['boosting_type'] = 'gbdt'
-    params['learning_rate'] = 0.013119110575691373  # 0.013119로 고치면 댐
+    params['learning_rate'] = 0.00901211683  # 0.013119로 고치면 댐
     # 예측력 상승
-    params['num_iterations'] = 5000  # = num round, num_boost_round
-    params['min_child_samples'] = 118
-    params['n_estimators'] = 15918  # 8500
-    params['subsample'] = 0.6194512025053622
-    params['num_leaves'] = 7868
+    params['num_iterations'] = 7000  # = num round, num_boost_round
+    params['min_child_samples'] = 137
+    params['n_estimators'] = 17260  # 8500
+    params['num_leaves'] = 11431
     params['max_depth'] = 35  # 26?
     # overfitting 방지
-    params['min_child_weight'] = 0.7628373492320147  # 높을수록 / 최대 6?
-    params['min_child_samples'] = 41  # 100 500 ?
-    params['subsample'] = 0.7611163934517731  # 낮을수록 overfitting down / 최소 0  = bagging_fraction
-    params['subsample_freq'] = 76
-    params['reg_alpha'] = 0.46641059279049957  # = lambda l1
-    params['reg_lambda'] = 0.30503746605875  # = lambda l2
-    params['min_gain_to_split'] = 0.05443147365335205  # = min_split_gain
-    params['colsample_bytree'] = 0.9009386979948221  # 낮을 수록 overfitting down / 최소 0  = feature_fraction
+    params['min_child_weight'] = 1.84548676996724  # 높을수록 / 최대 6?
+    params['min_child_samples'] = 37  # 100 500 ?
+    params['subsample'] = 0.785612320383  # 낮을수록 overfitting down / 최소 0  = bagging_fraction
+    params['subsample_freq'] = 75
+    params['reg_alpha'] = 1.37792417179  # = lambda l1
+    params['reg_lambda'] = 1.3180813428729763  # = lambda l2
+    params['min_gain_to_split'] = 0.0426731612843898  # = min_split_gain
+    params['colsample_bytree'] = 0.7485850157993732  # 낮을 수록 overfitting down / 최소 0  = feature_fraction
+    params['seed'] = random.seed(42)
     bst = LGBMRegressor(**params)
     bst.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='MAE', early_stopping_rounds=25)
 
@@ -55,7 +60,7 @@ y_pred /= n_splits
 
 sample_submission = pd.read_csv('../data/sample_submission.csv')
 sample_submission['target'] = y_pred
-sample_submission.to_csv("../data/submit_LGBM_fold.csv", index=False)
+sample_submission.to_csv("../data/submit_LGBM_fold2.csv", index=False)
 
 df = pd.DataFrame(y_for_LR)
-df.to_parquet('LGBM_LR.parquet', index=False)
+df.to_parquet('LGBM_LR2.parquet', index=False)
